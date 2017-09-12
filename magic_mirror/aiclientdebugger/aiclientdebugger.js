@@ -28,7 +28,8 @@ Module.register("aiclientdebugger",{
 		var wrapper = document.createElement("div");
 		if (this.microphoneEnabled) {
 			//wrapper.innerHTML = "<img src=\"" + this.file("microphone_icon.png") + "\" style=\"width:30px;height:30px;\">"
-			wrapper.innerHTML = "listening";
+			wrapper.innerHTML = "<img src=\"" + this.file("face.gif") + "\" style=\"border:1px solid black;max-width:100%;\">"
+			wrapper.innerHTML = "Escuchando...";
 			wrapper.className = "small bright";
 		}
 		return wrapper

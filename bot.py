@@ -1,7 +1,8 @@
 # bot.py
-
+# -*- coding: utf-8 -*-
 # speechrecognition, pyaudio, brew install portaudio
 import sys
+import random
 sys.path.append("./")
 
 import requests
@@ -14,14 +15,13 @@ from speech import Speech
 from knowledge import Knowledge
 from vision import Vision
 
-my_name = "Alex"
-launch_phrase = "upb"
+my_name = "Franco"
+launch_phrase = "hola"
 use_launch_phrase = True
-weather_api_token = "44c4b1b2a97bd2d77248353836ee8dfb"
-wit_ai_token = "Bearer JLF4IZ4FC5GF3IRHMXYGEJ2SXPJUJQTR"
+weather_api_token = "988603c4f8a6ba7c598b1e0412ada6d0"
+wit_ai_token = "Bearer DKEN3MLCSSRC22AKYY3RC2WH36WVI4GQ"
 debugger_enabled = True
 camera = 0
-
 
 class Bot(object):
     def __init__(self):
@@ -41,7 +41,7 @@ class Bot(object):
                 print "Found face"
                 if use_launch_phrase:
                     recognizer, audio = self.speech.listen_for_audio()
-                    if self.speech.is_call_to_action(recognizer, audio):
+                    if self.speech.is_call_to_action(recognizer, audio, wit_ai_token):
                         self.__acknowledge_action()
                         self.decide_action()
                 else:
@@ -55,7 +55,10 @@ class Bot(object):
         recognizer, audio = self.speech.listen_for_audio()
 
         # received audio data, now we'll recognize it using Google Speech Recognition
-        speech = self.speech.google_speech_recognition(recognizer, audio)
+        #speech = self.speech.google_speech_recognition(recognizer, audio)
+
+        # received audio data, now we'll recognize it using Wit Speech API
+        speech = self.speech.wit_speech_recognition(recognizer, audio, wit_ai_token)
 
         myheaders = {'Authorization': 'Bearer JLF4IZ4FC5GF3IRHMXYGEJ2SXPJUJQTR'}
         myspeech = 'tomorrow'
@@ -66,11 +69,12 @@ class Bot(object):
             print "Failed wit!"
             print(e)
             traceback.print_exc()
-            self.__text_action("I'm sorry, I couldn't understand what you meant by that")
+            self.__text_action("Perdón, no te entendí")
             return
         if speech is not None:
             try:
                 ##r = requests.get('https://api.wit.ai/message?v=20160918&q=%s' % speech,
+                #######speech = "torta UPB" #HARDCODED SPEECH
                 print 'Requesting WIT.AI [' + speech + ']'
                 r = requests.get('https://api.wit.ai/message?v=20170403&q=%s' % speech, headers={'Authorization': wit_ai_token})
                 print 'Text ' + r.text
@@ -85,8 +89,16 @@ class Bot(object):
                 print intent
                 if intent == 'greeting':
                     self.__text_action(self.nlg.greet())
-                elif intent == 'snow white':
-                    self.__text_action(self.nlg.snow_white())
+                elif intent == 'chiefs':     #CUSTOM
+                    self.__chiefs_action(entities)
+                elif intent == 'rooms':      #CUSTOM
+                    self.__rooms_action(entities)
+                elif intent == 'buses':      #CUSTOM
+                    self.__text_action(self.nlg.buses())
+                elif intent == 'schedules':  #CUSTOM
+                    self.__schedules_action(entities)
+                elif intent == 'career_semesterclasses':  #CUSTOM
+                    self.__career_sc_action(entities)
                 elif intent == 'weather':
                     self.__weather_action(entities)
                 elif intent == 'news':
@@ -97,8 +109,6 @@ class Bot(object):
                     self.__holidays_action()
                 elif intent == 'appearance':
                     self.__appearance_action()
-                elif intent == 'user status':
-                    self.__user_status_action(entities)
                 elif intent == 'user name':
                     self.__user_name_action()
                 elif intent == 'personal status':
@@ -112,14 +122,14 @@ class Bot(object):
                     self.__appreciation_action()
                     return
                 else: # No recognized intent
-                    self.__text_action("I'm sorry, I don't know about that yet.")
-                    return
+                    self.__text_action("Perdón, aún estoy en kinder.")
+                    #return
 
             except Exception as e:
                 print "Failed wit!"
                 print(e)
                 traceback.print_exc()
-                self.__text_action("I'm sorry, I couldn't understand what you meant by that")
+                self.__text_action("Perdón, no te entendí")
                 return
 
             self.decide_action()
@@ -131,14 +141,6 @@ class Bot(object):
             self.__text_action(joke)
         else:
             self.__text_action("I couldn't find any jokes")
-
-    def __user_status_action(self, nlu_entities=None):
-        attribute = None
-
-        if (nlu_entities is not None) and ("Status_Type" in nlu_entities):
-            attribute = nlu_entities['Status_Type'][0]['value']
-
-        self.__text_action(self.nlg.user_status(attribute=attribute))
 
     def __user_name_action(self):
         if self.nlg.user_name is None:
@@ -177,6 +179,73 @@ class Bot(object):
                 self.speech.synthesize_text(interest)
         else:
             self.__text_action("I had some trouble finding news for you")
+
+    # CUSTOM
+    def __chiefs_action(self, nlu_entities=None):
+
+        chief = None
+
+        if nlu_entities is not None:
+            if 'Career_Type' in nlu_entities:
+                career_type = nlu_entities['Career_Type'][0]['value']
+                print career_type
+                chief = self.nlg.chiefs(career_type)
+
+        if chief is not None:
+            self.__text_action(chief)
+        else:
+            self.__text_action("No encuentro al jefe de carrera")
+
+    # CUSTOM
+    def __rooms_action(self, nlu_entities=None):
+        if nlu_entities is not None:
+            if 'Room_Type' in nlu_entities:
+                location = nlu_entities['Room_Type'][0]['value']
+                print location
+
+        if location is not None:
+            room_url = self.knowledge.get_UPBroute_url(location)
+            body = {'url': room_url}
+            requests.post("http://localhost:8888/image", data=json.dumps(body))
+            
+            room_action = "%s se encuentra aqui." % location
+            self.speech.synthesize_text(room_action)
+        else:
+            self.__text_action("Perdón, no encontré el salon que buscabas")
+
+    # CUSTOM
+    def __schedules_action(self, nlu_entities=None):
+        if nlu_entities is not None:
+            if 'Professor_Names' in nlu_entities:
+                prof = nlu_entities['Professor_Names'][0]['value']
+                print prof
+
+        if prof is not None:
+            prof_url = self.knowledge.get_schedule_url(prof)
+            body = {'url': prof_url}
+            requests.post("http://localhost:8888/image", data=json.dumps(body))
+            
+            prof_action = "%s tiene los siguientes horarios. Podras tambien consultar sobre las ubicaciones." % prof
+            self.speech.synthesize_text(prof_action)
+        else:
+            self.__text_action("Perdón, no encontré a la persona que buscabas")
+
+    # CUSTOM
+    def __career_sc_action(self, nlu_entities=None):
+        if nlu_entities is not None:
+            if 'Career_Type' in nlu_entities:
+                career = nlu_entities['Career_Type'][0]['value']
+                print career
+
+        if career is not None:
+            career_url = self.knowledge.get_sc_url(career)
+            body = {'url': career_url}
+            requests.post("http://localhost:8888/image", data=json.dumps(body))
+            
+            career_action = "Ten el detalle de Semestres y Materias de %s." % career
+            self.speech.synthesize_text(career_action)
+        else:
+            self.__text_action("Perdón, no encontré la carrera que buscas.")
 
     def __weather_action(self, nlu_entities=None):
 
@@ -239,12 +308,12 @@ class Bot(object):
 
         if location is not None:
             maps_url = self.knowledge.get_map_url(location, map_type)
-            maps_action = "Sure. Here's a map of %s." % location
+            maps_action = "Ten un mapa de %s." % location
             body = {'url': maps_url}
             requests.post("http://localhost:8888/image", data=json.dumps(body))
             self.speech.synthesize_text(maps_action)
         else:
-            self.__text_action("I'm sorry, I couldn't understand what location you wanted.")
+            self.__text_action("Perdón, no encontré el lugar que buscabas")
 
     def __holidays_action(self):
         holidays = self.knowledge.get_holidays()
