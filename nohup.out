@@ -1,0 +1,77 @@
+jackdmp 1.9.10
+Copyright 2001-2005 Paul Davis and others.
+Copyright 2004-2014 Grame.
+jackdmp comes with ABSOLUTELY NO WARRANTY
+This is free software, and you are welcome to redistribute it
+under certain conditions; see the file COPYING for details
+JACK server starting in realtime mode with priority 10
+self-connect-mode is "Don't restrict self connect requests"
+audio_reservation_init
+Acquire audio card Audio0
+creating alsa driver ... hw:0|hw:0|1024|2|48000|0|0|nomon|swmeter|-|32bit
+ALSA: Cannot open PCM device alsa_pcm for capture. Falling back to playback-only mode
+configuring for 48000Hz, period = 1024 frames (21.3 ms), buffer = 2 periods
+ALSA: final selected sample format for playback: 16bit little-endian
+ALSA: use 2 periods for playback
+Jack main caught signal 2
+Released audio card Audio0
+audio_reservation_finish
+jackdmp 1.9.10
+Copyright 2001-2005 Paul Davis and others.
+Copyright 2004-2014 Grame.
+jackdmp comes with ABSOLUTELY NO WARRANTY
+This is free software, and you are welcome to redistribute it
+under certain conditions; see the file COPYING for details
+JACK server starting in non-realtime mode
+self-connect-mode is "Don't restrict self connect requests"
+audio_reservation_init
+Acquire audio card Audio0
+creating alsa driver ... hw:0|hw:0|1024|3|44100|0|0|nomon|swmeter|soft-mode|32bit
+ALSA: Cannot open PCM device alsa_pcm for capture. Falling back to playback-only mode
+configuring for 44100Hz, period = 1024 frames (23.2 ms), buffer = 3 periods
+ALSA: final selected sample format for playback: 16bit little-endian
+ALSA: use 3 periods for playback
+Jack main caught signal 2
+Released audio card Audio0
+audio_reservation_finish
+ALSA lib pcm.c:2239:(snd_pcm_open_noupdate) Unknown PCM cards.pcm.front
+ALSA lib pcm.c:2239:(snd_pcm_open_noupdate) Unknown PCM cards.pcm.rear
+ALSA lib pcm.c:2239:(snd_pcm_open_noupdate) Unknown PCM cards.pcm.center_lfe
+ALSA lib pcm.c:2239:(snd_pcm_open_noupdate) Unknown PCM cards.pcm.side
+ALSA lib pcm.c:2239:(snd_pcm_open_noupdate) Unknown PCM cards.pcm.surround21
+ALSA lib pcm.c:2239:(snd_pcm_open_noupdate) Unknown PCM cards.pcm.surround21
+ALSA lib pcm.c:2239:(snd_pcm_open_noupdate) Unknown PCM cards.pcm.surround40
+ALSA lib pcm.c:2239:(snd_pcm_open_noupdate) Unknown PCM cards.pcm.surround41
+ALSA lib pcm.c:2239:(snd_pcm_open_noupdate) Unknown PCM cards.pcm.surround50
+ALSA lib pcm.c:2239:(snd_pcm_open_noupdate) Unknown PCM cards.pcm.surround51
+ALSA lib pcm.c:2239:(snd_pcm_open_noupdate) Unknown PCM cards.pcm.surround71
+ALSA lib pcm.c:2239:(snd_pcm_open_noupdate) Unknown PCM cards.pcm.iec958
+ALSA lib pcm.c:2239:(snd_pcm_open_noupdate) Unknown PCM cards.pcm.iec958
+ALSA lib pcm.c:2239:(snd_pcm_open_noupdate) Unknown PCM cards.pcm.iec958
+ALSA lib pcm.c:2239:(snd_pcm_open_noupdate) Unknown PCM cards.pcm.hdmi
+ALSA lib pcm.c:2239:(snd_pcm_open_noupdate) Unknown PCM cards.pcm.hdmi
+ALSA lib pcm.c:2239:(snd_pcm_open_noupdate) Unknown PCM cards.pcm.modem
+ALSA lib pcm.c:2239:(snd_pcm_open_noupdate) Unknown PCM cards.pcm.modem
+ALSA lib pcm.c:2239:(snd_pcm_open_noupdate) Unknown PCM cards.pcm.phoneline
+ALSA lib pcm.c:2239:(snd_pcm_open_noupdate) Unknown PCM cards.pcm.phoneline
+ALSA lib pulse.c:243:(pulse_connect) PulseAudio: Unable to connect: Connection refused
+
+ALSA lib pulse.c:243:(pulse_connect) PulseAudio: Unable to connect: Connection refused
+
+Cannot connect to server socket err = No such file or directory
+Cannot connect to server request channel
+jack server is not running or cannot be started
+Warning: OpenCV not installed. To use facial recognition, make sure you've properly configured OpenCV.
+Found face
+Traceback (most recent call last):
+  File "bot.py", line 254, in <module>
+    bot.start()
+  File "bot.py", line 43, in start
+    recognizer, audio = self.speech.listen_for_audio()
+  File "/home/pi/AI-Smart-Mirror/speech.py", line 32, in listen_for_audio
+    m = sr.Microphone()
+  File "/home/pi/AI-Smart-Mirror/hhsmartmirror/local/lib/python2.7/site-packages/speech_recognition/__init__.py", line 86, in __init__
+    device_info = audio.get_device_info_by_index(device_index) if device_index is not None else audio.get_default_input_device_info()
+  File "/home/pi/AI-Smart-Mirror/hhsmartmirror/local/lib/python2.7/site-packages/pyaudio.py", line 949, in get_default_input_device_info
+    device_index = pa.get_default_input_device()
+IOError: No Default Input Device Available

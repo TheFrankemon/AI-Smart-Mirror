@@ -58,7 +58,7 @@ class Speech(object):
     def __debugger_microphone(self, enable=True):
         if self.debugger_enabled:
             try:
-                r = requests.get("http://localhost:8080/microphone?enabled=%s" % str(enable))
+                r = requests.get("http://localhost:8888/microphone?enabled=%s" % str(enable))
                 if r.status_code != 200:
                     print("Used wrong endpoint for microphone debugging")
             except Exception as e:

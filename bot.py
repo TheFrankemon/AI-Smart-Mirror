@@ -14,11 +14,11 @@ from speech import Speech
 from knowledge import Knowledge
 from vision import Vision
 
-my_name = "Aaron"
-launch_phrase = "ok mirror"
+my_name = "Alex"
+launch_phrase = "upb"
 use_launch_phrase = True
-weather_api_token = "<weather_token>"
-wit_ai_token = "<wit.ai_token>"
+weather_api_token = "44c4b1b2a97bd2d77248353836ee8dfb"
+wit_ai_token = "Bearer JLF4IZ4FC5GF3IRHMXYGEJ2SXPJUJQTR"
 debugger_enabled = True
 camera = 0
 
@@ -36,7 +36,7 @@ class Bot(object):
         :return:
         """
         while True:
-            requests.get("http://localhost:8080/clear")
+            requests.get("http://localhost:8888/clear")
             if self.vision.recognize_face():
                 print "Found face"
                 if use_launch_phrase:
@@ -57,11 +57,24 @@ class Bot(object):
         # received audio data, now we'll recognize it using Google Speech Recognition
         speech = self.speech.google_speech_recognition(recognizer, audio)
 
+        myheaders = {'Authorization': 'Bearer JLF4IZ4FC5GF3IRHMXYGEJ2SXPJUJQTR'}
+        myspeech = 'tomorrow'
+        try:
+            r = requests.get('https://api.wit.ai/message?v=20170403&q=%s' % myspeech, headers=myheaders)
+            print 'Out Text ' + r.text
+        except Exception as e:
+            print "Failed wit!"
+            print(e)
+            traceback.print_exc()
+            self.__text_action("I'm sorry, I couldn't understand what you meant by that")
+            return
         if speech is not None:
             try:
-                r = requests.get('https://api.wit.ai/message?v=20160918&q=%s' % speech,
-                                 headers={"Authorization": wit_ai_token})
-                print r.text
+                ##r = requests.get('https://api.wit.ai/message?v=20160918&q=%s' % speech,
+                print 'Requesting WIT.AI [' + speech + ']'
+                r = requests.get('https://api.wit.ai/message?v=20170403&q=%s' % speech, headers={'Authorization': wit_ai_token})
+                print 'Text ' + r.text
+                #print r.headers['authorization']
                 json_resp = json.loads(r.text)
                 entities = None
                 intent = None
@@ -134,7 +147,7 @@ class Bot(object):
         self.__text_action(self.nlg.user_name)
 
     def __appearance_action(self):
-        requests.get("http://localhost:8080/face")
+        requests.get("http://localhost:8888/face")
 
     def __appreciation_action(self):
         self.__text_action(self.nlg.appreciation())
@@ -150,14 +163,14 @@ class Bot(object):
 
     def __text_action(self, text=None):
         if text is not None:
-            requests.get("http://localhost:8080/statement?text=%s" % text)
+            requests.get("http://localhost:8888/statement?text=%s" % text)
             self.speech.synthesize_text(text)
 
     def __news_action(self):
         headlines = self.knowledge.get_news()
 
         if headlines:
-            requests.post("http://localhost:8080/news", data=json.dumps({"articles":headlines}))
+            requests.post("http://localhost:8888/news", data=json.dumps({"articles":headlines}))
             self.speech.synthesize_text(self.nlg.news("past"))
             interest = self.nlg.article_interest(headlines)
             if interest is not None:
@@ -206,7 +219,7 @@ class Bot(object):
 
 
         weather_data = {"temperature": temperature, "icon": icon, 'windSpeed': wind_speed, "hour": datetime.datetime.now().hour}
-        requests.post("http://localhost:8080/weather", data=json.dumps(weather_data))
+        requests.post("http://localhost:8888/weather", data=json.dumps(weather_data))
 
         if not skip_weather:
             self.speech.synthesize_text(weather_speech)
@@ -228,7 +241,7 @@ class Bot(object):
             maps_url = self.knowledge.get_map_url(location, map_type)
             maps_action = "Sure. Here's a map of %s." % location
             body = {'url': maps_url}
-            requests.post("http://localhost:8080/image", data=json.dumps(body))
+            requests.post("http://localhost:8888/image", data=json.dumps(body))
             self.speech.synthesize_text(maps_action)
         else:
             self.__text_action("I'm sorry, I couldn't understand what location you wanted.")
@@ -236,7 +249,7 @@ class Bot(object):
     def __holidays_action(self):
         holidays = self.knowledge.get_holidays()
         next_holiday = self.__find_next_holiday(holidays)
-        requests.post("http://localhost:8080/holidays", json.dumps({"holiday": next_holiday}))
+        requests.post("http://localhost:8888/holidays", json.dumps({"holiday": next_holiday}))
         self.speech.synthesize_text(self.nlg.holiday(next_holiday['localName']))
 
     def __find_next_holiday(self, holidays):

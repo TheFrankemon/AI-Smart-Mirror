@@ -16,6 +16,8 @@ class Knowledge(object):
         lon = loc_obj['lon']
 
         weather_req_url = "https://api.darksky.net/forecast/%s/%s,%s" % (self.weather_api_token, lat, lon)
+        print "WILL PRINT THE FORECAST"
+        print weather_req_url
         r = requests.get(weather_req_url)
         weather_json = json.loads(r.text)
 
