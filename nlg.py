@@ -137,7 +137,7 @@ class NLG(object):
             return chiefs[3]
         elif career == u'Derecho':
             return chiefs[4]
-        elif career == u'Diseno Gráfico':
+        elif career == u'Diseño Gráfico':
             return chiefs[5]
         elif career == u'Ingeniería de Sistemas Computacionales':
             return chiefs[6]
@@ -162,6 +162,20 @@ class NLG(object):
 
         return None
     
+    def info(self, phrase):
+        infos = [
+            "Este es un prototipo del UPB Smart Booth.",
+            "Te presento al UPB Smart Booth.",
+            "Hola! Soy UPB Smart Booth y aun estoy en Beta."
+        ]
+        
+        infos2 = [
+            "Di \"" + phrase.capitalize() + "\" para interactuar conmigo",
+            "Di \"" + phrase.capitalize() + "\" para que pueda ayudarte",
+            "Di \"" + phrase.capitalize() + "\" para darte una mano"
+        ]
+
+        return random.choice(infos) + " " + random.choice(infos2)
     def joke(self):
         jokes = [
             "Artificial intelligence is no match for natural stupidity.",

@@ -39,6 +39,7 @@ class Bot(object):
             requests.get("http://localhost:8888/clear")
             if self.vision.recognize_face():
                 print "Found face"
+                self.__info_action(launch_phrase)
                 if use_launch_phrase:
                     recognizer, audio = self.speech.listen_for_audio()
                     if self.speech.is_call_to_action(recognizer, audio, wit_ai_token):
@@ -112,7 +113,7 @@ class Bot(object):
                     return
                 else: # No recognized intent
                     self.__text_action("Perdón, aún estoy en kinder.")
-                    #return
+                    return
 
             except Exception as e:
                 print "Failed wit!"
@@ -122,6 +123,15 @@ class Bot(object):
                 return
 
             self.decide_action()
+
+    # CUSTOM
+    def __info_action(self, phrase):
+        info = self.nlg.info(phrase)
+
+        if info is not None:
+            self.__text_action(info)
+        else:
+            self.__text_action("Me raye")
 
     def __joke_action(self):
         joke = self.nlg.joke()
