@@ -60,21 +60,10 @@ class Bot(object):
         # received audio data, now we'll recognize it using Wit Speech API
         speech = self.speech.wit_speech_recognition(recognizer, audio, wit_ai_token)
 
-        myheaders = {'Authorization': 'Bearer JLF4IZ4FC5GF3IRHMXYGEJ2SXPJUJQTR'}
-        myspeech = 'tomorrow'
-        try:
-            r = requests.get('https://api.wit.ai/message?v=20170403&q=%s' % myspeech, headers=myheaders)
-            print 'Out Text ' + r.text
-        except Exception as e:
-            print "Failed wit!"
-            print(e)
-            traceback.print_exc()
-            self.__text_action("Perdón, no te entendí")
-            return
         if speech is not None:
             try:
-                ##r = requests.get('https://api.wit.ai/message?v=20160918&q=%s' % speech,
-                #######speech = "torta UPB" #HARDCODED SPEECH
+                ## Uncomment for HARDCODED SPEECH ##
+                #speech = "torta UPB"
                 print 'Requesting WIT.AI [' + speech + ']'
                 r = requests.get('https://api.wit.ai/message?v=20170403&q=%s' % speech, headers={'Authorization': wit_ai_token})
                 print 'Text ' + r.text
