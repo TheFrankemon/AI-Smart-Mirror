@@ -113,7 +113,7 @@ class Bot(object):
                     return
                 else: # No recognized intent
                     self.__text_action("Perdón, aún estoy en kinder.")
-                    return
+                    
 
             except Exception as e:
                 print "Failed wit!"
