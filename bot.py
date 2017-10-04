@@ -14,6 +14,7 @@ from nlg import NLG
 from speech import Speech
 from knowledge import Knowledge
 from vision import Vision
+from mongo import Mongo
 
 my_name = "Franco"
 launch_phrase = "hola"
@@ -29,6 +30,7 @@ class Bot(object):
         self.speech = Speech(launch_phrase=launch_phrase, debugger_enabled=debugger_enabled)
         self.knowledge = Knowledge(weather_api_token)
         self.vision = Vision(camera=camera)
+        self.mongo = Mongo()
 
     def start(self):
         """
@@ -42,6 +44,9 @@ class Bot(object):
                 self.vision.recognize_face('c2.png')
                 self.__info_action(launch_phrase)
                 if use_launch_phrase:
+                    self.mongo.add("",
+                        "/home/pi/AI-Smart-Mirror-Franco/img/c1.png",
+                        "/home/pi/AI-Smart-Mirror-Franco/img/c2.png")
                     recognizer, audio = self.speech.listen_for_audio()
                     if self.speech.is_call_to_action(recognizer, audio, wit_ai_token):
                         self.__acknowledge_action()
