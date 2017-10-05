@@ -20,7 +20,7 @@ my_name = "Franco"
 launch_phrase = "hola"
 use_launch_phrase = True
 with open('config.json') as data_file:    
-	data = json.load(data_file)
+	conf = json.load(data_file)
 debugger_enabled = True
 camera = 0
 
@@ -28,7 +28,7 @@ class Bot(object):
     def __init__(self):
         self.nlg = NLG(user_name=my_name)
         self.speech = Speech(launch_phrase=launch_phrase, debugger_enabled=debugger_enabled)
-        self.knowledge = Knowledge(data["weather_api_token"])
+        self.knowledge = Knowledge(str(conf["weather_api_token"]))
         self.vision = Vision(camera=camera)
         self.mongo = Mongo()
 
@@ -48,7 +48,7 @@ class Bot(object):
                         "/home/pi/AI-Smart-Mirror-Franco/img/c1.png",
                         "/home/pi/AI-Smart-Mirror-Franco/img/c2.png")
                     recognizer, audio = self.speech.listen_for_audio()
-                    if self.speech.is_call_to_action(recognizer, audio, data["wit_ai_token"]):
+                    if self.speech.is_call_to_action(recognizer, audio, str(conf["wit_ai_token"])):
                         self.__acknowledge_action()
                         self.decide_action()
                 else:
@@ -65,14 +65,14 @@ class Bot(object):
         #speech = self.speech.google_speech_recognition(recognizer, audio)
 
         # received audio data, now we'll recognize it using Wit Speech API
-        speech = self.speech.wit_speech_recognition(recognizer, audio, data["wit_ai_token"])
+        speech = self.speech.wit_speech_recognition(recognizer, audio, str(conf["wit_ai_token"]))
 
         if speech is not None:
             try:
                 ## Uncomment for HARDCODED SPEECH ##
                 #speech = "torta UPB"
                 print 'Requesting WIT.AI [' + speech + ']'
-                r = requests.get('https://api.wit.ai/message?v=20170403&q=%s' % speech, headers={'Authorization': data["wit_ai_token"]})
+                r = requests.get('https://api.wit.ai/message?v=20170403&q=%s' % speech, headers={'Authorization': str(conf["wit_ai_token"])})
                 print 'Text ' + r.text
                 #print r.headers['authorization']
                 json_resp = json.loads(r.text)
