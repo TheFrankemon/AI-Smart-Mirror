@@ -65,14 +65,14 @@ class NLG(object):
 
 		return ret_phrase
 
-"""
+        """
 	def searching(self):
 		searching_phrases = [
 			"I'll see what I can find"
 		]
 
 		return random.choice(searching_phrases)
-"""
+        """
 	def insult(self):
 		return "That's not very nice. Talk to me again when you have fixed your attitude"
 

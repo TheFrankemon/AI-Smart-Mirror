@@ -15,6 +15,7 @@ class Mongo(object):
     def connect(self):
         try:
             concat = "mongodb://" + usr + ":" + pwd + "@" + serverip + "/" + dbname        
+            print("Connecting to DB:..." + concat)
             client = pymongo.MongoClient(concat)
             global db
             db = client.mean

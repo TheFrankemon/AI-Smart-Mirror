@@ -23,7 +23,7 @@ camera = 0
 
 class Bot(object):
 	def __init__(self):
-		self.nlg = NLG(user_name=my_name)
+		self.nlg = NLG(user_name=user_name)
 		self.speech = Speech(debugger_enabled=debugger_enabled)
 		self.vision = Vision(camera=camera)
 		self.mongo = Mongo()
@@ -42,9 +42,10 @@ class Bot(object):
 				############## set timer to wait for another face
 				print "Found face > Took Photo#2"
 				self.__user_name_action() #########3 here it must enable keyboard, wait for ACCEPT
-				self.mongo.add(self.user_name,
+				self.mongo.add(user_name,
 					"/home/pi/AI-Smart-Mirror-Franco/img/c1.png",
 					"/home/pi/AI-Smart-Mirror-Franco/img/c2.png")
+				print "Found face > Took Photo#2"
 				self.__acknowledge_action()
 				####### it should return Y/N...Y > decide action...N > appreciation action
 				self.decide_action()
@@ -111,7 +112,7 @@ class Bot(object):
 		if self.nlg.user_name is None:
 			self.__text_action("I don't know your name. You can configure it in bot.py")
 
-		self.__text_action(self.user_name)
+		self.__text_action(user_name)
 
 	def __acknowledge_action(self):
 		acknowledge = self.nlg.acknowledge()
