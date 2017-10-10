@@ -1,15 +1,23 @@
 # -*- coding: utf-8 -*-
 import pymongo
+import json
 from bson.binary import Binary
 
-usr = "franco"
-pwd = "123"
-serverip = "10.0.0.15"
-dbname = "mean"
+usr = ""
+pwd = ""
+serverip = ""
+dbname = ""
 db = None
 
 class Mongo(object):
     def __init__(self):
+        with open('config.json') as data_file:
+            conf = json.load(data_file)
+        global usr, pwd, serverip, dbname
+        usr = str(conf["conn"]["usr"])
+        pwd = str(conf["conn"]["pwd"])
+        serverip = str(conf["conn"]["serverip"])
+        dbname = str(conf["conn"]["dbname"])
         self.connect()
 
     def connect(self):
