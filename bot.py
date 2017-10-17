@@ -18,9 +18,11 @@ from mongo import Mongo
 user_name = "Temporal bro"
 debugger_enabled = True
 camera = 0
+conf = None
 
 class Bot(object):
     def __init__(self):
+        global conf
         with open('config.json') as data_file:
 	    conf = json.load(data_file)
         self.nlg = NLG(user_name=user_name)
@@ -35,12 +37,15 @@ class Bot(object):
 	"""
         while True:
             requests.get("http://localhost:8888/clear")
+            requests.get("http://localhost:8888/keyboard?text=disable")
             if self.vision.recognize_face('c1.png'):
 		print "Found face > Took Photo#1"
+		requests.get("http://localhost:8888/keyboard?text=enable")
                 self.__intro_action()
 		self.vision.recognize_face('c2.png')
 		############## set timer to wait for another face
 		print "Found face > Took Photo#2"
+                requests.get("http://localhost:8888/keyboard?text=disable")
 		self.__user_name_action() #########3 here it must enable keyboard, wait for ACCEPT
 		self.mongo.add(user_name,
                     "/home/pi/AI-Smart-Mirror-Franco/img/c1.png",

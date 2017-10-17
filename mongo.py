@@ -42,7 +42,7 @@ class Mongo(object):
             binaryimg2 = Binary(open(img_url2,'rb').read())
             global db
             db.clients.insert_one({
-                "name":"Juan Doe",
+                "name": name,
                 "img1":binaryimg1,
                 "img2":binaryimg2
             })
