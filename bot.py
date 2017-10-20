@@ -10,6 +10,7 @@ import datetime
 import dateutil.parser
 import json
 import traceback
+import time
 from nlg import NLG
 from speech import Speech
 from vision import Vision
@@ -35,22 +36,34 @@ class Bot(object):
 	Main loop.
 	:return:
 	"""
+	global user_name
         while True:
             requests.get("http://localhost:8888/clear")
             requests.get("http://localhost:8888/keyboard?text=disable")
             if self.vision.recognize_face('c1.png'):
 		print "Found face > Took Photo#1"
-		requests.get("http://localhost:8888/keyboard?text=enable")
                 self.__intro_action()
+                requests.get("http://localhost:8888/keyboard?text=enable")
 		self.vision.recognize_face('c2.png')
-		############## set timer to wait for another face
 		print "Found face > Took Photo#2"
+		#ans = None
+                #while True:
+                    #ans = requests.get("http://localhost:8888/keyboard?text=check")
+                    #print ans
+                    #if ans == "OK":
+                    #    return
+                    #else
+                time.sleep(5)
+                uname = requests.get('http://localhost:8888/uname').json()
                 requests.get("http://localhost:8888/keyboard?text=disable")
-		self.__user_name_action() #########3 here it must enable keyboard, wait for ACCEPT
+                #########3 here it must enable keyboard, wait for ACCEPT
+                print "Username: " + uname[u'name']
+                user_name = uname['name']
+		self.__user_name_action()
 		self.mongo.add(user_name,
                     "/home/pi/AI-Smart-Mirror-Franco/img/c1.png",
                     "/home/pi/AI-Smart-Mirror-Franco/img/c2.png")
-		print "Found face > Took Photo#2"
+		print "User saved succesfully on DB"
 		self.__acknowledge_action()
 		####### it should return Y/N...Y > decide action...N > appreciation action
 		self.decide_action()
@@ -117,7 +130,7 @@ class Bot(object):
         if self.nlg.user_name is None:
             self.__text_action("I don't know your name. You can configure it in bot.py")
 
-        self.__text_action(user_name)
+        self.__text_action("Hola " + user_name)
 
     def __acknowledge_action(self):
         acknowledge = self.nlg.acknowledge()
