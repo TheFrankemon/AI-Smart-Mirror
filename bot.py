@@ -44,6 +44,13 @@ class Bot(object):
 		print "Found face > Took Photo#1"
                 self.__intro_action()
                 requests.get("http://localhost:8888/keyboard?text=enable")
+
+                time.sleep(7)
+                uname = requests.get('http://localhost:8888/uname').json()
+                print uname
+                time.sleep(3)
+                requests.get("http://localhost:8888/keyboard?text=disable")
+
 		self.vision.recognize_face('c2.png')
 		print "Found face > Took Photo#2"
 		#ans = None
@@ -53,9 +60,6 @@ class Bot(object):
                     #if ans == "OK":
                     #    return
                     #else
-                time.sleep(5)
-                uname = requests.get('http://localhost:8888/uname').json()
-                requests.get("http://localhost:8888/keyboard?text=disable")
                 #########3 here it must enable keyboard, wait for ACCEPT
                 print "Username: " + uname[u'name']
                 user_name = uname['name']
