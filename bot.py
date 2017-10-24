@@ -45,10 +45,9 @@ class Bot(object):
                 self.__intro_action()
                 requests.get("http://localhost:8888/keyboard?text=enable")
 
-                time.sleep(7)
+                time.sleep(10)
                 uname = requests.get('http://localhost:8888/uname').json()
                 print uname
-                time.sleep(3)
                 requests.get("http://localhost:8888/keyboard?text=disable")
 
 		self.vision.recognize_face('c2.png')
