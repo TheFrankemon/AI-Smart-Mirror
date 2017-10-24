@@ -8,8 +8,7 @@ class NLG(object):
 	Used to generate natural language. Most of these sections are hard coded. However, some use simpleNLG which is
 	used to string together verbs and nouns.
 	"""
-	def __init__(self, user_name=None):
-		self.user_name = user_name
+	def __init__(self):
 
 		# make random more random by seeding with time
 		random.seed(dt.datetime.now())
@@ -28,8 +27,7 @@ class NLG(object):
 
 		return random.choice(intros) + " " + random.choice(intros2)
 
-	def acknowledge(self):
-		user_name = self.user_name
+	def acknowledge(self, user_name):
 		if user_name is None:
 			user_name = ""
 
