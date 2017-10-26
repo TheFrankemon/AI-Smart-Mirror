@@ -25,17 +25,17 @@ class Bot(object):
 	def __init__(self):
 		global conf
 		with open('config.json') as data_file:
-		conf = json.load(data_file)
+			conf = json.load(data_file)
 		self.nlg = NLG()
 		self.speech = Speech(debugger_enabled=debugger_enabled)
 		self.vision = Vision(camera=camera)
 		self.mongo = Mongo()
 
 	def start(self):
-	"""
-	Main loop.
-	:return:
-	"""
+		"""
+		Main loop.
+		:return:
+		"""
 		while True:
 			requests.get("http://localhost:8888/clear")
 			requests.get("http://localhost:8888/keyboard?text=disable")
@@ -61,7 +61,7 @@ class Bot(object):
 				#########3 here it must enable keyboard, wait for ACCEPT
 				print "Username: " + uname[u'name']
 				global user_name
-				user_name = uname['name']
+				user_name = uname['name'].encode('utf8')
 				self.__user_name_action()
 				self.mongo.add(user_name,
 					"/home/pi/AI-Smart-Mirror-Franco/img/c1.png",
@@ -130,7 +130,7 @@ class Bot(object):
 			self.__text_action("Me raye, contacta a un humano por favor")
 
 	def __user_name_action(self):
-		if self.nlg.user_name is None:
+		if user_name is None:
 			self.__text_action("I don't know your name. You can configure it in bot.py")
 
 		self.__text_action("Hola " + user_name)

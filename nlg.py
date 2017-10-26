@@ -46,7 +46,7 @@ class NLG(object):
 		]
 
 		choice = 0
-		if self.user_name is not None:
+		if user_name is not None:
 			choice = random.randint(0, 2)
 		else:
 			choice = random.randint(0,1)
