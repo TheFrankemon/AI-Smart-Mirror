@@ -45,11 +45,11 @@ class Speech(object):
 		with m as source:
 			r.adjust_for_ambient_noise(source)
 			self.__debugger_microphone(enable=True)
-			print "I'm listening..."
+			print("I'm listening...")
 			audio = r.listen(source)
 
 		self.__debugger_microphone(enable=False)
-		print "Found audio"
+		print("Found audio")
 		return r, audio
 
 	def synthesize_text(self, text):

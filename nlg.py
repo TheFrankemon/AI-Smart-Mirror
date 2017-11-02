@@ -16,16 +16,27 @@ class NLG(object):
 	def intro(self):
 		intros = [
 			"Este es un prototipo del UPB Smart Booth.",
-			"Te presento al UPB Smart Booth.",
-			"Hola! Soy UPB Smart Booth y aun estoy en Beta."
+			"Me presento, soy UPB Smart Booth.",
+			"Hola! Soy UPB Smart Booth y aun estoy sprendiendo."
 		]
 		
 		intros2 = [
-			"Digita tu nombre en el recuadro por favor",
-			"Escribe tu nombre completo acá abajo por favor",
+			"Digita tu nombre y apellido por favor",
+			"Escribe tu nombre y apellido por favor"
 		]
 
 		return random.choice(intros) + " " + random.choice(intros2)
+
+	def user_name(self, user_name):
+		phrases = [
+			"Así que tu nombre es %s" % user_name,
+			"Cómo estás %s" % user_name,
+			"Qué tal %s" % user_name,
+                        "Hola %s" % user_name,
+                        "%s %s" % (self.time_of_day(dt.datetime.now()), user_name)
+		]
+
+		return random.choice(phrases)
 
 	def acknowledge(self, user_name):
 		if user_name is None:
@@ -33,16 +44,13 @@ class NLG(object):
 
 		simple_acknoledgement = [
 			"Sí?",
-			"Qué puedo hacer por vos?",
-			"Qué querés?"
+			"Qué puedo hacer por vos?"
 		]
 
 		personal_acknowledgement = [
 			"Qué necesitas de mí, %s?" % user_name,
 			"Cómo puedo ayudarte, %s?" % user_name,
-			"Qué puedo hacer por vos, %s?" % user_name,
-			"Hola %s, qué puedo hacer por vos?" % user_name,
-			"Hey %s, qué puedo hacer por vos?" % user_name
+			"Qué puedo hacer por vos, %s?" % user_name
 		]
 
 		choice = 0
@@ -81,7 +89,6 @@ class NLG(object):
 			"No, gracias a ti",
 			"De nada",
 			"No, por favor",
-			"Claro, no hay problema",
 			"Ni lo menciones"
 		]
 
