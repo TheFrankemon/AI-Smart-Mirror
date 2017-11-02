@@ -14,7 +14,7 @@ import time
 from nlg import NLG
 from speech import Speech
 from vision import Vision
-from mongo import Mongo
+from firebase import Firebase
 
 user_name = "Desconocido"
 debugger_enabled = True
@@ -29,7 +29,7 @@ class Bot(object):
 		self.nlg = NLG()
 		self.speech = Speech(debugger_enabled=debugger_enabled)
 		self.vision = Vision(camera=camera)
-		self.mongo = Mongo()
+		self.firebase = Firebase()
 
 	def start(self):
 		"""
@@ -40,17 +40,17 @@ class Bot(object):
 			requests.get("http://localhost:8888/clear")
 			requests.get("http://localhost:8888/keyboard?text=disable")
 			if self.vision.recognize_face('c1.png'):
-				print "Found face > Took Photo#1"
+				print("Found face > Took Photo#1")
 				self.__intro_action()
 				requests.get("http://localhost:8888/keyboard?text=enable")
 
 				time.sleep(10)
 				uname = requests.get('http://localhost:8888/uname').json()
-				print uname
+				print(uname)
 				requests.get("http://localhost:8888/keyboard?text=disable")
 
 				self.vision.recognize_face('c2.png')
-				print "Found face > Took Photo#2"
+				print("Found face > Took Photo#2")
 				#ans = None
 				#while True:
 					#ans = requests.get("http://localhost:8888/keyboard?text=check")
@@ -59,14 +59,12 @@ class Bot(object):
 					#    return
 					#else
 				#########3 here it must enable keyboard, wait for ACCEPT
-				print "Username: " + uname[u'name']
+				print("Username: " + uname[u'name'])
 				global user_name
-				user_name = uname['name'].encode('utf8')
+				user_name = uname['name']
 				self.__user_name_action()
-				self.mongo.add(user_name,
-					"/home/pi/AI-Smart-Mirror-Franco/img/c1.png",
-					"/home/pi/AI-Smart-Mirror-Franco/img/c2.png")
-				print "User saved succesfully on DB"
+				self.firebase.add(user_name,"img/c1.png","img/c2.png")
+				print("User saved succesfully on DB")
 				self.__acknowledge_action()
 				####### it should return Y/N...Y > decide action...N > appreciation action
 				self.decide_action()
@@ -88,9 +86,9 @@ class Bot(object):
 			try:
 				## Uncomment for HARDCODED SPEECH ##
 				#speech = "torta UPB"
-				print 'Requesting WIT.AI [' + speech + ']'
+				print('Requesting WIT.AI [' + speech + ']')
 				r = requests.get('https://api.wit.ai/message?v=20170403&q=%s' % speech, headers={'Authorization': str(conf["tokens"]["wit_ai_token"])})
-				print 'Text ' + r.text
+				print('Text ' + r.text)
 				#print r.headers['authorization']
 				json_resp = json.loads(r.text)
 				entities = None
@@ -99,7 +97,7 @@ class Bot(object):
 					entities = json_resp['entities']
 					intent = json_resp['entities']['Intent'][0]["value"]
 
-				print intent
+				print(intent)
 				if intent == 'appearance':
 					self.__appearance_action()
 				elif intent == 'insult':
@@ -112,7 +110,7 @@ class Bot(object):
 					self.__text_action("Perdón, aún estoy en kinder.")
 
 			except Exception as e:
-				print "Failed wit!"
+				print("Failed wit!")
 				print(e)
 				traceback.print_exc()
 				self.__text_action("Perdón, no te entendí")
@@ -122,18 +120,20 @@ class Bot(object):
 
 	# CUSTOM
 	def __intro_action(self):
-		intro = self.nlg.intro()
+		intro_phrase = self.nlg.intro()
 
-		if intro is not None:
-			self.__text_action(intro)
-		else:
+		if intro_phrase is None:
 			self.__text_action("Me raye, contacta a un humano por favor")
+		else:
+			self.__text_action(intro_phrase)
 
 	def __user_name_action(self):
-		if user_name is None:
-			self.__text_action("I don't know your name. You can configure it in bot.py")
+		username_phrase = self.nlg.user_name(user_name)
 
-		self.__text_action("Hola " + user_name)
+		if user_name is None:
+			self.__text_action("No pude guardar tu nombre, contacta a un humano por favor")
+		else:
+			self.__text_action(username_phrase)
 
 	def __acknowledge_action(self):
 		acknowledge = self.nlg.acknowledge(user_name)
