@@ -38,12 +38,13 @@ class Firebase(object):
 			imgpath = os.path.join(fileDir, img_1)
 			filename = name + '/1.png'
 			storage.child(filename).put(imgpath)
+			img1url = storage.child(filename).get_url(None)
 			imgpath = os.path.join(fileDir, img_2)
 			filename = name + '/2.png'
 			storage.child(filename).put(imgpath)
-			img1url = storage.child(filename).get_url(None)
+			img2url = storage.child(filename).get_url(None)
 
-			data = {"name": name, "img1": img1url, "img2": img1url}
+			data = {"name": name, "img1": img1url, "img2": img2url}
 			db.child("clients").push(data)
 
 		except Exception as e:
