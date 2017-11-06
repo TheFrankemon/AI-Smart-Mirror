@@ -44,7 +44,7 @@ class Firebase(object):
 			storage.child(filename).put(imgpath)
 			img2url = storage.child(filename).get_url(None)
 
-			data = {"name": name, "img1": img1url, "img2": img2url}
+			data = {"name": name, "img1": img1url, "img2": img2url, "isCompleted": False}
 			db.child("clients").push(data)
 
 		except Exception as e:
