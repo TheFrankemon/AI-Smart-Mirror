@@ -44,24 +44,25 @@ class Bot(object):
 				self.__intro_action()
 				requests.get("http://localhost:8888/keyboard?text=enable")
 
-				time.sleep(10)
-				uname = requests.get('http://localhost:8888/uname').json()
-				print(uname)
-				requests.get("http://localhost:8888/keyboard?text=disable")
-
+				flag = False
+				sleeptime = 0
+				while not flag:
+					uname = requests.get('http://localhost:8888/uname').json()
+					if uname[u'name'] == "":
+						# must set a max of 20 secs, for example
+						sleeptime += 1
+						print('Total sleep time: ' + str(sleeptime))
+						time.sleep(1)
+					else:
+						flag = not flag
+						requests.get("http://localhost:8888/keyboard?text=disable")
+						
 				self.vision.recognize_face('c2.png')
 				print("Found face > Took Photo#2")
-				#ans = None
-				#while True:
-					#ans = requests.get("http://localhost:8888/keyboard?text=check")
-					#print ans
-					#if ans == "OK":
-					#    return
-					#else
-				#########3 here it must enable keyboard, wait for ACCEPT
 				print("Username: " + uname[u'name'])
 				global user_name
 				user_name = uname['name']
+				requests.get('http://localhost:8888/unameclear')
 				self.__user_name_action()
 				self.firebase.add(user_name,"img/c1.png","img/c2.png")
 				print("User saved succesfully on DB")
