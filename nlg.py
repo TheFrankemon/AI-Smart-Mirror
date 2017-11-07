@@ -9,7 +9,6 @@ class NLG(object):
 	used to string together verbs and nouns.
 	"""
 	def __init__(self):
-
 		# make random more random by seeding with time
 		random.seed(dt.datetime.now())
 
@@ -32,8 +31,8 @@ class NLG(object):
 			"Así que tu nombre es %s" % user_name,
 			"Cómo estás %s" % user_name,
 			"Qué tal %s" % user_name,
-                        "Hola %s" % user_name,
-                        "%s %s" % (self.time_of_day(dt.datetime.now()), user_name)
+			"Hola %s" % user_name,
+			"%s %s" % (self.time_of_day(dt.datetime.now()), user_name)
 		]
 
 		return random.choice(phrases)
