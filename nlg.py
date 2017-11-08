@@ -14,14 +14,15 @@ class NLG(object):
 
 	def intro(self):
 		intros = [
-			"Este es un prototipo del UPB Smart Booth.",
-			"Me presento, soy UPB Smart Booth.",
-			"Hola! Soy UPB Smart Booth y aun estoy sprendiendo."
+			"Bienvenidos a la UPB, soy UPB Smart Booth.",
+			"Bienvenidos a su nueva casa, soy UPB Smart Booth.",
+			"Hola! Soy UPB Smart Booth y aun estoy en mi etapa de prueba."
 		]
 		
 		intros2 = [
 			"Digita tu nombre y apellido por favor",
-			"Escribe tu nombre y apellido por favor"
+			"Escribe tu nombre y apellido por favor",
+                        "Te pido que escribas tu nombre y apellido por favor"
 		]
 
 		return random.choice(intros) + " " + random.choice(intros2)
@@ -69,6 +70,21 @@ class NLG(object):
 			ret_phrase = random.choice(personal_acknowledgement)
 
 		return ret_phrase
+
+	def goodbye(self):
+		goodbyes = [
+			"Todo listo!",
+			"Todo salió bien, gracias!",
+			"Disculpa por la demora, ya guardé tus datos"
+		]
+		
+		goodbyes2 = [
+			"Por favor pasa, toma asiento que enseguida te atenderán",
+			"Pasa, toma asiento por favor",
+			"Así que puedes pasar a tomar asiento"
+		]
+
+		return random.choice(goodbyes) + " " + random.choice(goodbyes2)
 
 	"""
 	def searching(self):

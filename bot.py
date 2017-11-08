@@ -67,9 +67,10 @@ class Bot(object):
 				timestamp = dt.datetime.today().strftime('%d/%m/%y %H:%M:%S')
 				self.firebase.add(user_name,"img/c1.png","img/c2.png", timestamp)
 				print("User saved succesfully on DB")
-				self.__acknowledge_action()
-				####### it should return Y/N...Y > decide action...N > appreciation action
-				self.decide_action()
+				self.__goodbye_action()
+				# should ask decide_action ??
+				#self.__acknowledge_action()
+				#self.decide_action()
 
 	def decide_action(self):
 		"""
@@ -142,6 +143,14 @@ class Bot(object):
 
 		if acknowledge is not None:
 			self.__text_action(acknowledge)
+		else:
+			self.__text_action("Me raye, contacta a un humano por favor")
+
+	def __goodbye_action(self):
+		goodbye = self.nlg.goodbye()
+
+		if goodbye is not None:
+			self.__text_action(goodbye)
 		else:
 			self.__text_action("Me raye, contacta a un humano por favor")
 
