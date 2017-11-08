@@ -30,7 +30,7 @@ class Firebase(object):
 			traceback.print_exc()
 			return
 
-	def add(self, name, img_1, img_2):
+	def add(self, name, img_1, img_2, timestamp):
 		try:
 			db = firebase.database()
 			storage = firebase.storage()
@@ -44,7 +44,7 @@ class Firebase(object):
 			storage.child(filename).put(imgpath)
 			img2url = storage.child(filename).get_url(None)
 
-			data = {"name": name, "img1": img1url, "img2": img2url, "isCompleted": False}
+			data = {"name": name, "img1": img1url, "img2": img2url, "isCompleted": False, "ts": timestamp}
 			db.child("clients").push(data)
 
 		except Exception as e:

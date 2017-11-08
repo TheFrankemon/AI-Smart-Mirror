@@ -6,7 +6,7 @@ import random
 sys.path.append("./")
 
 import requests
-import datetime
+import datetime as dt
 import dateutil.parser
 import json
 import traceback
@@ -64,7 +64,8 @@ class Bot(object):
 				user_name = uname['name']
 				requests.get('http://localhost:8888/unameclear')
 				self.__user_name_action()
-				self.firebase.add(user_name,"img/c1.png","img/c2.png")
+				timestamp = dt.datetime.today().strftime('%d/%m/%y %H:%M:%S')
+				self.firebase.add(user_name,"img/c1.png","img/c2.png", timestamp)
 				print("User saved succesfully on DB")
 				self.__acknowledge_action()
 				####### it should return Y/N...Y > decide action...N > appreciation action
