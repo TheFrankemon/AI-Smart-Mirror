@@ -71,6 +71,7 @@ class Bot(object):
 				# should ask decide_action ??
 				#self.__acknowledge_action()
 				#self.decide_action()
+				time.sleep(5)
 
 	def decide_action(self):
 		"""
