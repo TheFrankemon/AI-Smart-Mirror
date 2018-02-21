@@ -42,7 +42,7 @@ class NLG(object):
 			"%s %s" % (self.time_of_day(dt.datetime.now()), user_name)
 		]
 
-		return random.choice(phrases)
+		return random.choice(phrases + ". Espera unos segundos por favor")
 
 	def acknowledge(self, user_name):
 		if user_name is None:
