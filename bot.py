@@ -39,7 +39,7 @@ class Bot(object):
 		while True:
 			requests.get("http://localhost:8888/clear")
 			requests.get("http://localhost:8888/keyboard?text=disable")
-			if self.vision.recognize_face('c1.png'):
+			if self.vision.recognize_face('c1'):
 				print("Found face > Took Photo#1")
 				self.__intro_action()
 				requests.get("http://localhost:8888/keyboard?text=enable")
@@ -57,7 +57,7 @@ class Bot(object):
 						flag = not flag
 						requests.get("http://localhost:8888/keyboard?text=disable")
 						
-				self.vision.recognize_face('c2.png')
+				self.vision.recognize_face('c2')
 				print("Found face > Took Photo#2")
 				print("Username: " + uname[u'name'])
 				global user_name

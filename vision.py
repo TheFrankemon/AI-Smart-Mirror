@@ -40,7 +40,10 @@ class Vision(object):
 			if len(faces) > 0:
 				# Uncomment to improve photo quality (May take a bit)
 				#frame = cv2.fastNlMeansDenoisingColored(frame,None,10,10,7,21)
-				cv2.imwrite('img/' + img_name, frame)
+
+				#cv2.imwrite('img/' + img_name, frame)
+				cv2.imwrite('img/' + img_name + '.png', frame, [cv2.IMWRITE_PNG_COMPRESSION, 9])
+
 				# When everything is done, release the capture
 				video_capture.release()
 				cv2.destroyAllWindows()
