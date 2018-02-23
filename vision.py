@@ -42,7 +42,7 @@ class Vision(object):
 				#frame = cv2.fastNlMeansDenoisingColored(frame,None,10,10,7,21)
 
 				#cv2.imwrite('img/' + img_name, frame)
-				cv2.imwrite('img/' + img_name + '.png', frame, [cv2.IMWRITE_PNG_COMPRESSION, 9])
+				cv2.imwrite('img/' + img_name + '.jpg', frame, [cv2.IMWRITE_JPEG_QUALITY, 80])
 
 				# When everything is done, release the capture
 				video_capture.release()

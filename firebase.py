@@ -36,11 +36,11 @@ class Firebase(object):
 			storage = firebase.storage()
 
 			imgpath = os.path.join(fileDir, img_1)
-			filename = name + '/1.png'
+			filename = name + '/1.jpg'
 			storage.child(filename).put(imgpath)
 			img1url = storage.child(filename).get_url(None)
 			imgpath = os.path.join(fileDir, img_2)
-			filename = name + '/2.png'
+			filename = name + '/2.jpg'
 			storage.child(filename).put(imgpath)
 			img2url = storage.child(filename).get_url(None)
 

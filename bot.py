@@ -65,7 +65,7 @@ class Bot(object):
 				requests.get('http://localhost:8888/unameclear')
 				self.__user_name_action()
 				timestamp = dt.datetime.today().strftime('%d/%m/%y %H:%M:%S')
-				self.firebase.add(user_name,"img/c1.png","img/c2.png", timestamp)
+				self.firebase.add(user_name,"img/c1.jpg","img/c2.jpg", timestamp)
 				print("User saved succesfully on DB")
 				self.__goodbye_action()
 				# should ask decide_action ??
