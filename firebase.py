@@ -44,11 +44,14 @@ class Firebase(object):
 			storage.child(filename).put(imgpath)
 			img2url = storage.child(filename).get_url(None)
 
-			data = {"img1": img1url, "img2": img2url, "isCompleted": False, "name": name, "ts": timestamp, "user": "", "userUID": "", "comment": ""}
-			db.child("clients").push(data)
+			userdata = {"img1": img1url, "img2": img2url, "isCompleted": False, "name": name, "ts": timestamp, "user": "", "userUID": "", "comment": ""}
+			db.child("clients").push(userdata)
+
+			logdata = {"client": name, "event": "ARRIVED", "ts": timestamp}
+			db.child("eventlog").push(logdata)
 
 		except Exception as e:
-			print("Failed to parse images")
+			print("Failed to save images")
 			print(e)
 			traceback.print_exc()
 			return
