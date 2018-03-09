@@ -1,13 +1,12 @@
 import sys
 
-sys.path.append('usr/local/lib/python3.4/site-packages')
+sys.path.append('/usr/local/lib/python3.4/site-packages')
 vision_enabled = False
 try:
 	import cv2
 	vision_enabled = True
 except Exception as e:
 	print("Warning: OpenCV not installed. To use facial recognition, make sure you've properly configured OpenCV.")
-
 
 class Vision(object):
 	def __init__(self, facial_recognition_model="models/facial_recognition_model.xml", camera=0):
@@ -29,7 +28,6 @@ class Vision(object):
 		while True:
 			# Capture frame-by-frame
 			ret, frame = video_capture.read()
-
 			gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
 			faces = face_cascade.detectMultiScale(
@@ -50,13 +48,11 @@ class Vision(object):
 
 if __name__ == "__main__":
 	faceCascade = cv2.CascadeClassifier("models/facial_recognition_model.xml")
-
 	video_capture = cv2.VideoCapture(0)
 
 	while True:
 		# Capture frame-by-frame
 		ret, frame = video_capture.read()
-
 		gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
 		faces = faceCascade.detectMultiScale(
