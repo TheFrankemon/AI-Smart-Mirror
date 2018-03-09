@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 
 class Knowledge(object):
-	def __init__(self):
-		return true
-
 	def get_map_url(self, location, map_type=None):
 		if map_type == "satellite":
 			return "http://maps.googleapis.com/maps/api/staticmap?center=%s&zoom=13&scale=false&size=1200x600&maptype=satellite&format=png" % location

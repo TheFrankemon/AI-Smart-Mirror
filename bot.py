@@ -33,7 +33,7 @@ class Bot(object):
 		self.speech = Speech(launch_phrase=launch_phrase, debugger_enabled=debugger_enabled)
 		self.knowledge = Knowledge()
 		self.vision = Vision(camera=camera)
-		self.firebase = Firebase()
+		#self.firebase = Firebase()
 
 	def start(self):
 		"""
@@ -43,7 +43,7 @@ class Bot(object):
 		while True:
 			requests.get("http://localhost:8888/clear")
 			if self.vision.recognize_face():
-				print "Found face"
+				print("Found face")
 				self.__info_action(launch_phrase)
 				if use_launch_phrase:
 					recognizer, audio = self.speech.listen_for_audio()
@@ -69,10 +69,10 @@ class Bot(object):
 		if speech is not None:
 			try:
 				#speech = "torta UPB" ###Hardcoded Speech
-				print 'Requesting WIT.AI [' + speech + ']'
+				print('Requesting WIT.AI [' + speech + ']')
 				r = requests.get('https://api.wit.ai/message?v=20170403&q=%s' % speech, headers={'Authorization': str(conf["wit_ai_token"])})
-				print 'Text ' + r.text
-				#print r.headers['authorization']
+				print('Text ' + r.text)
+				#print(r.headers['authorization'])
 				json_resp = json.loads(r.text)
 				entities = None
 				intent = None
@@ -80,7 +80,7 @@ class Bot(object):
 					entities = json_resp['entities']
 					intent = json_resp['entities']['Intent'][0]["value"]
 
-				print intent
+				print(intent)
 				if intent == 'chiefs':     #CUSTOM
 					self.__chiefs_action(entities)
 				elif intent == 'rooms':      #CUSTOM
@@ -100,7 +100,7 @@ class Bot(object):
 					self.__text_action("Perdón, aún estoy en kinder.")
 
 			except Exception as e:
-				print "Failed wit!"
+				print("Failed wit!")
 				print(e)
 				traceback.print_exc()
 				self.__text_action("Perdón, no te entendí")
@@ -128,7 +128,7 @@ class Bot(object):
 		if nlu_entities is not None:
 			if 'Career_Type' in nlu_entities:
 				career_type = nlu_entities['Career_Type'][0]['value']
-				print career_type
+				print(career_type)
 				chief = self.nlg.chiefs(career_type)
 
 		if chief is not None:
@@ -141,7 +141,7 @@ class Bot(object):
 		if nlu_entities is not None:
 			if 'Room_Type' in nlu_entities:
 				location = nlu_entities['Room_Type'][0]['value']
-				print location
+				print(location)
 
 		if location is not None:
 			room_url = self.knowledge.get_UPBroute_url(location)
@@ -158,7 +158,7 @@ class Bot(object):
 		if nlu_entities is not None:
 			if 'Professor_Names' in nlu_entities:
 				prof = nlu_entities['Professor_Names'][0]['value']
-				print prof
+				print(prof)
 
 		if prof is not None:
 			prof_url = self.knowledge.get_schedule_url(prof)
@@ -175,7 +175,7 @@ class Bot(object):
 		if nlu_entities is not None:
 			if 'Career_Type' in nlu_entities:
 				career = nlu_entities['Career_Type'][0]['value']
-				print career
+				print(career)
 
 		if career is not None:
 			career_url = self.knowledge.get_sc_url(career)
