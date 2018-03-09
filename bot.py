@@ -47,7 +47,7 @@ class Bot(object):
 				self.__info_action(launch_phrase)
 				if use_launch_phrase:
 					recognizer, audio = self.speech.listen_for_audio()
-					if self.speech.is_call_to_action(recognizer, audio, str(conf["wit_ai_token"])):
+					if self.speech.is_call_to_action(recognizer, audio, str(conf["tokens"]["wit_ai_token"])):
 						self.__acknowledge_action()
 						self.decide_action()
 				else:
@@ -64,13 +64,13 @@ class Bot(object):
 		#speech = self.speech.google_speech_recognition(recognizer, audio)
 
 		#Recognize audio with Wit Speech API
-		speech = self.speech.wit_speech_recognition(recognizer, audio, str(conf["wit_ai_token"]))
+		speech = self.speech.wit_speech_recognition(recognizer, audio, str(conf["tokens"]["wit_ai_token"]))
 
 		if speech is not None:
 			try:
 				#speech = "torta UPB" ###Hardcoded Speech
 				print('Requesting WIT.AI [' + speech + ']')
-				r = requests.get('https://api.wit.ai/message?v=20170403&q=%s' % speech, headers={'Authorization': str(conf["wit_ai_token"])})
+				r = requests.get('https://api.wit.ai/message?v=20170403&q=%s' % speech, headers={'Authorization': str(conf["tokens"]["wit_ai_token"])})
 				print('Text ' + r.text)
 				#print(r.headers['authorization'])
 				json_resp = json.loads(r.text)
