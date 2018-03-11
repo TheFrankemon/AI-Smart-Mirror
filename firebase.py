@@ -28,10 +28,14 @@ class Firebase(object):
 			traceback.print_exc()
 			return
 
-	def add(self):
+	def getDBcourses(self, course, professor):
 		try:
-			db = firebase.database()
-			storage = firebase.storage()
+			if (professor is None):
+				
+			else:
+				db = firebase.database()
+				course_data = db.child("courses").child(course).child("professors").child(professor).get().val()
+				return course_data['classroom'], course_data['period']
 
 		except Exception as e:
 			print(e)

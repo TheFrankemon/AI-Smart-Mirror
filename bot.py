@@ -13,7 +13,6 @@ import traceback
 import time
 from nlg import NLG
 from speech import Speech
-from knowledge import Knowledge
 from vision import Vision
 from firebase import Firebase
 
@@ -31,7 +30,6 @@ class Bot(object):
 			conf = json.load(data_file)
 		self.nlg = NLG()
 		self.speech = Speech(launch_phrase=launch_phrase, debugger_enabled=debugger_enabled)
-		self.knowledge = Knowledge()
 		self.vision = Vision(camera=camera)
 		#self.firebase = Firebase()
 
@@ -70,7 +68,7 @@ class Bot(object):
 			try:
 				#speech = "torta UPB" ###Hardcoded Speech
 				print('Requesting WIT.AI [' + speech + ']')
-				r = requests.get('https://api.wit.ai/message?v=20170403&q=%s' % speech, headers={'Authorization': str(conf["tokens"]["wit_ai_token"])})
+				r = requests.get('https://api.wit.ai/message?v=01/03/2018&q=%s' % speech, headers={'Authorization': str(conf["tokens"]["wit_ai_token"])})
 				print('Text ' + r.text)
 				#print(r.headers['authorization'])
 				json_resp = json.loads(r.text)
@@ -91,6 +89,8 @@ class Bot(object):
 					self.__schedules_action(entities)
 				elif intent == 'career_semesterclasses':  #CUSTOM
 					self.__career_sc_action(entities)
+				elif intent == 'courses':  #CUSTOM
+					self.__courses_action(entities)
 				elif intent == 'maps':
 					self.__maps_action(entities)
 				elif intent == 'appreciation':
@@ -122,7 +122,6 @@ class Bot(object):
 
 	# CUSTOM
 	def __chiefs_action(self, nlu_entities=None):
-
 		chief = None
 
 		if nlu_entities is not None:
@@ -144,7 +143,7 @@ class Bot(object):
 				print(location)
 
 		if location is not None:
-			room_url = self.knowledge.get_UPBroute_url(location)
+			room_url = self.nlg.get_UPBroute_url(location)
 			body = {'url': room_url}
 			requests.post("http://localhost:8888/image", data=json.dumps(body))
 			
@@ -161,7 +160,7 @@ class Bot(object):
 				print(prof)
 
 		if prof is not None:
-			prof_url = self.knowledge.get_schedule_url(prof)
+			prof_url = self.nlg.get_schedule_url(prof)
 			body = {'url': prof_url}
 			requests.post("http://localhost:8888/image", data=json.dumps(body))
 			
@@ -178,12 +177,29 @@ class Bot(object):
 				print(career)
 
 		if career is not None:
-			career_url = self.knowledge.get_sc_url(career)
+			career_url = self.nlg.get_sc_url(career)
 			body = {'url': career_url}
 			requests.post("http://localhost:8888/image", data=json.dumps(body))
 			
 			career_action = "Ten el detalle de Semestres y Materias de %s." % career
 			self.speech.synthesize_text(career_action)
+		else:
+			self.__text_action("Perdón, no encontré la carrera que buscas.")
+
+	# CUSTOM: Base example is Info about <course> by <professor>
+	def __courses_action(self, nlu_entities=None):
+		if nlu_entities is not None:
+			if 'Course_Names' in nlu_entities:
+				course = nlu_entities['Course_Names'][0]['value']
+				print(course)
+			if 'Professor_Names' in nlu_entities:
+				professor = nlu_entities['Professor_Names'][0]['value']
+				print(professor)
+
+		if course is not None and professor is not None:
+			classroom, period = self.firebase.getDBcourses(course, professor)
+			
+			self.__text_action("%s: %s. Las clases son en %s en horario %s" % course, professor, classroom, period)
 		else:
 			self.__text_action("Perdón, no encontré la carrera que buscas.")
 
@@ -197,7 +213,7 @@ class Bot(object):
 				map_type = nlu_entities['Map_Type'][0]["value"]
 
 		if location is not None:
-			maps_url = self.knowledge.get_map_url(location, map_type)
+			maps_url = self.nlg.get_map_url(location, map_type)
 			maps_action = "Ten un mapa de %s." % location
 			body = {'url': maps_url}
 			requests.post("http://localhost:8888/image", data=json.dumps(body))
