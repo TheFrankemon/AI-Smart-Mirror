@@ -31,7 +31,7 @@ class Bot(object):
 		self.nlg = NLG()
 		self.speech = Speech(launch_phrase=launch_phrase, debugger_enabled=debugger_enabled)
 		self.vision = Vision(camera=camera)
-		#self.firebase = Firebase()
+		self.firebase = Firebase()
 
 	def start(self):
 		"""
@@ -68,7 +68,7 @@ class Bot(object):
 			try:
 				#speech = "torta UPB" ###Hardcoded Speech
 				print('Requesting WIT.AI [' + speech + ']')
-				r = requests.get('https://api.wit.ai/message?v=01/03/2018&q=%s' % speech, headers={'Authorization': str(conf["tokens"]["wit_ai_token"])})
+				r = requests.get('https://api.wit.ai/message?v=20180301&q=%s' % speech, headers={'Authorization': str(conf["tokens"]["wit_ai_token"])})
 				print('Text ' + r.text)
 				#print(r.headers['authorization'])
 				json_resp = json.loads(r.text)
@@ -199,7 +199,7 @@ class Bot(object):
 		if course is not None and professor is not None:
 			classroom, period = self.firebase.getDBcourses(course, professor)
 			
-			self.__text_action("%s: %s. Las clases son en %s en horario %s" % course, professor, classroom, period)
+			self.__text_action(("{}: {}. Las clases son en {} en horario {}").format(course, professor, classroom, period))
 		else:
 			self.__text_action("Perdón, no encontré la carrera que buscas.")
 

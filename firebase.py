@@ -11,9 +11,7 @@ class Firebase(object):
 	def __init__(self):
 		with open('config.json') as data_file:
 			conf = json.load(data_file)
-		global usr, pwd, fireconfig
-		usr = str(conf["conn"]["usr"])
-		pwd = str(conf["conn"]["pwd"])
+		global fireconfig
 		fireconfig = conf["conn"]["fireconfig"]
 		self.connect()
 
@@ -31,7 +29,7 @@ class Firebase(object):
 	def getDBcourses(self, course, professor):
 		try:
 			if (professor is None):
-				
+                                return "A99", "T"	
 			else:
 				db = firebase.database()
 				course_data = db.child("courses").child(course).child("professors").child(professor).get().val()
