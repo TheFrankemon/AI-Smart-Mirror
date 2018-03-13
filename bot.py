@@ -196,12 +196,22 @@ class Bot(object):
 				professor = nlu_entities['Professor_Names'][0]['value']
 				print(professor)
 
-		if course is not None and professor is not None:
-			classroom, period = self.firebase.getDBcourses(course, professor)
-			
-			self.__text_action(("{}: {}. Las clases son en {} en horario {}").format(course, professor, classroom, period))
+		if course is not None:
+			if professor is not None:
+				classroom, period = self.firebase.getDBcourses(course, professor)
+				self.__text_action(("{}: {}. Las clases son en {} en horario {}").format(course, professor, classroom, period))
+			else:
+				professors = self.firebase.getDBcourses(course, None)
+				prof_json = json.loads(professors)
+				course_parallels_number = len(prof_json)
+				self.__text_action(("Existen {} paralelos de {}...").format(course_parallels_number, course))
+				for parallel in prof_json:
+					professor = parallel
+					classroom = parallel['classroom']
+					period = parallel['period']
+					self.__text_action(("{}. Las clases son en {} en horario {}").format(professor, classroom, period))
 		else:
-			self.__text_action("Perdón, no encontré la carrera que buscas.")
+			self.__text_action("Perdón, no encontré la clase que buscas.")
 
 	def __maps_action(self, nlu_entities=None):
 		location = None

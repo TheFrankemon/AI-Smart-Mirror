@@ -28,10 +28,11 @@ class Firebase(object):
 
 	def getDBcourses(self, course, professor):
 		try:
+			db = firebase.database()
 			if (professor is None):
-                                return "A99", "T"	
+				course_data = db.child("courses").child(course).child("professors").get().val()
+				return course_data
 			else:
-				db = firebase.database()
 				course_data = db.child("courses").child(course).child("professors").child(professor).get().val()
 				return course_data['classroom'], course_data['period']
 
