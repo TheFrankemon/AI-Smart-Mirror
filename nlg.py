@@ -233,7 +233,7 @@ class NLG(object):
 		elif prof == u"Alex Villazón":
 			return "http://i.imgur.com/fBo0k7w.png"
 		else:
-			return "http://maps.googleapis.com/maps/api/staticmap?center=%s&zoom=13&scale=false&size=1200x600&maptype=roadmap&format=png" % location
+			return "http://i.imgur.com/fBo0k7w.png"
 
 	# CUSTOM
 	def get_sc_url(self, career):
@@ -271,6 +271,3 @@ class NLG(object):
 			return "http://i.imgur.com/eV5f01b.png"
 		else:
 			return ""
-
-	def name(self):
-		return self.user_name

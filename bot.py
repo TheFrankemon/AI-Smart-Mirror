@@ -16,7 +16,6 @@ from speech import Speech
 from vision import Vision
 from firebase import Firebase
 
-user_name = "Franco"
 launch_phrase = "hola"
 use_launch_phrase = True
 debugger_enabled = True
@@ -79,18 +78,20 @@ class Bot(object):
 					intent = json_resp['entities']['Intent'][0]["value"]
 
 				print(intent)
-				if intent == 'chiefs':     #CUSTOM
+				#CUSTOM>
+				if intent == 'chiefs':
 					self.__chiefs_action(entities)
-				elif intent == 'rooms':      #CUSTOM
+				elif intent == 'rooms':
 					self.__rooms_action(entities)
-				elif intent == 'buses':      #CUSTOM
+				elif intent == 'buses':
 					self.__text_action(self.nlg.buses())
-				elif intent == 'schedules':  #CUSTOM
+				elif intent == 'schedules':
 					self.__schedules_action(entities)
-				elif intent == 'career_semesterclasses':  #CUSTOM
+				elif intent == 'career_semesterclasses':
 					self.__career_sc_action(entities)
-				elif intent == 'courses':  #CUSTOM
+				elif intent == 'courses':
 					self.__courses_action(entities)
+				#<CUSTOM
 				elif intent == 'maps':
 					self.__maps_action(entities)
 				elif intent == 'appreciation':
@@ -194,23 +195,15 @@ class Bot(object):
 			if 'Course_Names' in nlu_entities:
 				course = nlu_entities['Course_Names'][0]['value']
 				print(course)
-			if 'Professor_Names' in nlu_entities:
-				professor = nlu_entities['Professor_Names'][0]['value']
-				print(professor)
 
 		if course is not None:
-			if professor is not None:
-				classroom, period = self.firebase.getDBcourses(course, professor)
-				self.__text_action(("{}: {}. Las clases son en {} en horario {}").format(course, professor, classroom, period))
-			else:
-				professors = self.firebase.getDBcourses(course, None)
-				course_parallels_number = len(professors)
-				self.__text_action(("Existen {} paralelos de {}...").format(course_parallels_number, course))
-				for parallel in professors:
-					professor = parallel
-					classroom = parallel[professor]['classroom']
-					period = parallel[professor]['period']
-					self.__text_action(("{}. Las clases son en {} en horario {}").format(professor, classroom, period))
+			parallels = self.firebase.get_DB_course_parallels(course)
+			self.__text_action(("Existen {} paralelos de {}...").format(len(parallels), course))
+			for parallel in parallels:
+				professor = parallel['professor']
+				classroom = parallel['classroom']
+				period = parallel['period']
+				self.__text_action(("{}. Las clases son en {} en horario {}").format(professor, classroom, period))
 		else:
 			self.__text_action("Perdón, no encontré la clase que buscas.")
 
