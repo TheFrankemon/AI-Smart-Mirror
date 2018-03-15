@@ -188,6 +188,8 @@ class Bot(object):
 
 	# CUSTOM: Base example is Info about <course> by <professor>
 	def __courses_action(self, nlu_entities=None):
+		course = None
+		professor = None
 		if nlu_entities is not None:
 			if 'Course_Names' in nlu_entities:
 				course = nlu_entities['Course_Names'][0]['value']
@@ -202,13 +204,12 @@ class Bot(object):
 				self.__text_action(("{}: {}. Las clases son en {} en horario {}").format(course, professor, classroom, period))
 			else:
 				professors = self.firebase.getDBcourses(course, None)
-				prof_json = json.loads(professors)
-				course_parallels_number = len(prof_json)
+				course_parallels_number = len(professors)
 				self.__text_action(("Existen {} paralelos de {}...").format(course_parallels_number, course))
-				for parallel in prof_json:
+				for parallel in professors:
 					professor = parallel
-					classroom = parallel['classroom']
-					period = parallel['period']
+					classroom = parallel[professor]['classroom']
+					period = parallel[professor]['period']
 					self.__text_action(("{}. Las clases son en {} en horario {}").format(professor, classroom, period))
 		else:
 			self.__text_action("Perdón, no encontré la clase que buscas.")
