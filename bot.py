@@ -195,15 +195,44 @@ class Bot(object):
 			if 'Course_Names' in nlu_entities:
 				course = nlu_entities['Course_Names'][0]['value']
 				print(course)
+			if 'Professor_Names' in nlu_entities:
+				professor = nlu_entities['Professor_Names'][0]['value']
+				print(professor)
 
 		if course is not None:
-			parallels = self.firebase.get_DB_course_parallels(course)
-			self.__text_action(("Existen {} paralelos de {}...").format(len(parallels), course))
-			for parallel in parallels:
-				professor = parallel['professor']
-				classroom = parallel['classroom']
-				period = parallel['period']
-				self.__text_action(("{}. Las clases son en {} en horario {}").format(professor, classroom, period))
+			if professor is None:
+				parallels = self.firebase.get_DB_course_parallels(course)
+				if len(parallels) == 1:
+					self.__text_action(("Existe 1 paralelo de {}...").format(course))
+				else:
+					self.__text_action(("Existen {} paralelos de {}...").format(len(parallels), course))
+
+				for parallel in parallels:
+					professor = parallel['professor']
+					if professor == "":
+						professor = "Docente por definir"
+					classroom = parallel['classroom']
+					if classroom == "":
+						classroom = "un aula por definir"
+					period = parallel['period']
+					self.__text_action(("{}. Las clases son en horario {} en {}").format(professor, period, classroom))
+
+			else:
+				parallels = self.firebase.get_DB_course_parallels(course, professor)
+				if len(parallels) == 1:
+					self.__text_action(("Existe 1 paralelo de {} con {}...").format(course, professor))
+				else:
+					self.__text_action(("Existen {} paralelos de {} con {}...").format(len(parallels), course, professor))
+				index = 1
+
+				for parallel in parallels:
+					classroom = parallel['classroom']
+					if classroom == "":
+						classroom = "un aula por definir"
+					period = parallel['period']
+					self.__text_action(("Paralelo {}. Las clases son en {} en horario {}").format(index, classroom, period))
+					index += 1
+
 		else:
 			self.__text_action("Perdón, no encontré la clase que buscas.")
 

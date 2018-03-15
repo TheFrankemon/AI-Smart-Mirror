@@ -25,6 +25,17 @@ class Firebase(object):
 			classroom = parallel['classroom']
 			period = parallel['period']
 			print(("{}. Las clases son en {} en horario {}").format(professor, classroom, period))
+		
+		course = "Finanzas 2"
+		professor = "Juan Jose Jordan Sanchez"
+		parallels = self.get_DB_course_parallels(course, professor)
+		print(("Existen {} paralelos de {} con {}...").format(len(parallels), course, professor))
+		index = 1
+		for parallel in parallels:
+			classroom = parallel['classroom']
+			period = parallel['period']
+			print(("Paralelo {}. Las clases son en {} en horario {}").format(index, classroom, period))
+			index += 1
 		"""
 
 	def connect(self):
@@ -38,11 +49,19 @@ class Firebase(object):
 			print(e)
 			return
 
-	def get_DB_course_parallels(self, course = None):
+	def get_DB_course_parallels(self, course = None, professor = None):
 		try:
 			db = firebase.database()
-			course_data = db.child("courses").child(course).child("parallels").get().val()
-			return course_data
+			data = db.child("courses").child(course).child("parallels").get().val()
+			if professor is None:
+				return data
+			else:
+				filtered_data = []
+				for parallel in data:
+					if professor == parallel['professor']:
+						filtered_data.append(parallel)
+
+				return filtered_data
 
 		except Exception as e:
 			print(e)
