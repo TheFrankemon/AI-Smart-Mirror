@@ -71,6 +71,7 @@ class Speech(object):
 
 	def __debugger_microphone(self, enable=True):
 		if self.debugger_enabled:
+			print("Listening...")
 			try:
 				r = requests.get("http://localhost:8888/microphone?enabled=%s" % str(enable))
 				if r.status_code != 200:

@@ -45,7 +45,9 @@ class Bot(object):
 				self.__info_action(launch_phrase)
 				if use_launch_phrase:
 					recognizer, audio = self.speech.listen_for_audio()
+					self.__debugger_recognition(enable=True)
 					if self.speech.is_call_to_action(recognizer, audio, str(conf["tokens"]["wit_ai_token"])):
+						self.__debugger_recognition(enable=False)
 						self.__acknowledge_action()
 						self.decide_action()
 				else:
@@ -65,61 +67,58 @@ class Bot(object):
 		self.__debugger_recognition(enable=True)
 		speech = self.speech.wit_speech_recognition(recognizer, audio, str(conf["tokens"]["wit_ai_token"]))
 
-		if speech is not None:
+		if speech is None:
+			self.__debugger_recognition(enable=False)
+			self.__text_action("Perdón, no te oí bien. Déjame reconocerte de nuevo...")
+		else:
+			entities = None
+			intent = None
 			try:
-				#speech = "torta UPB" ###Hardcoded Speech
-				print('Requesting WIT.AI [' + speech + ']')
+				#speech = "something" ##Hardcoded Speech
+				print('Requesting WIT.AI: ' + speech)
 				r = requests.get('https://api.wit.ai/message?v=20180301&q=%s' % speech, headers={'Authorization': str(conf["tokens"]["wit_ai_token"])})
 				self.__debugger_recognition(enable=False)
-				print('Text ' + r.text)
-				#print(r.headers['authorization'])
+				print('Recognized text: ' + r.text)
 				json_resp = json.loads(r.text)
-				entities = None
-				intent = None
 				if 'entities' in json_resp and 'Intent' in json_resp['entities']:
 					entities = json_resp['entities']
 					intent = json_resp['entities']['Intent'][0]["value"]
 
-				print(intent)
-				#CUSTOM>
-				if intent == 'chiefs':
-					self.__chiefs_action(entities)
-				elif intent == 'rooms':
-					self.__rooms_action(entities)
-				elif intent == 'buses':
-					self.__text_action(self.nlg.buses())
-				elif intent == 'schedules':
-					self.__schedules_action(entities)
-				elif intent == 'career_semesterclasses':
-					self.__career_sc_action(entities)
-				elif intent == 'courses':
-					self.__courses_action(entities)
-				#<CUSTOM
-				elif intent == 'maps':
-					self.__maps_action(entities)
-				elif intent == 'appreciation':
-					self.__text_action(self.nlg.appreciation())
-					return
-				else: # No recognized intent
-					self.__text_action("Perdón, aún estoy en kinder.")
-
 			except Exception as e:
-				print("Failed wit!")
-				print(e)
+				print("Failed wit! " + e)
 				traceback.print_exc()
-				self.__text_action("Perdón, no te entendí")
+				self.__text_action("Perdón, algo anda mal con el servicio de reconocimiento")
 				return
+
+			print(intent)
+			#CUSTOM>
+			if intent == 'chiefs':
+				self.__chiefs_action(entities)
+			elif intent == 'rooms':
+				self.__rooms_action(entities)
+			elif intent == 'buses':
+				self.__text_action(self.nlg.buses())
+			elif intent == 'schedules':
+				self.__schedules_action(entities)
+			elif intent == 'career_semesterclasses':
+				self.__career_sc_action(entities)
+			elif intent == 'courses':
+				self.__courses_action(entities)
+			#<CUSTOM
+			elif intent == 'maps':
+				self.__maps_action(entities)
+			elif intent == 'appreciation':
+				self.__text_action(self.nlg.appreciation())
+				return
+			else: # No recognized intent
+				self.__text_action("Perdón, no entendí el asunto")
 
 			self.decide_action()
 
 	# CUSTOM
 	def __info_action(self, phrase):
 		info = self.nlg.info(phrase)
-
-		if info is not None:
-			self.__text_action(info)
-		else:
-			self.__text_action("Me raye")
+		self.__text_action(info)
 
 	def __acknowledge_action(self):
 		self.__text_action(self.nlg.acknowledge())
@@ -127,20 +126,19 @@ class Bot(object):
 	# CUSTOM
 	def __chiefs_action(self, nlu_entities=None):
 		chief = None
-
-		if nlu_entities is not None:
-			if 'Career_Type' in nlu_entities:
-				career_type = nlu_entities['Career_Type'][0]['value']
-				print(career_type)
-				chief = self.nlg.chiefs(career_type)
+		if nlu_entities is not None and 'Career_Type' in nlu_entities:
+			career_type = nlu_entities['Career_Type'][0]['value']
+			print(career_type)
+			chief = self.nlg.chiefs(career_type)
 
 		if chief is not None:
 			self.__text_action(chief)
 		else:
-			self.__text_action("No encuentro al jefe de carrera")
+			self.__text_action("Perdón, no encuentro al jefe de carrera")
 
 	# CUSTOM
 	def __rooms_action(self, nlu_entities=None):
+		location = None
 		if nlu_entities is not None:
 			if 'Room_Type' in nlu_entities:
 				location = nlu_entities['Room_Type'][0]['value']
@@ -171,7 +169,7 @@ class Bot(object):
 			prof_action = "%s tiene los siguientes horarios. Podras tambien consultar sobre las ubicaciones." % prof
 			self.speech.synthesize_text(prof_action)
 		else:
-			self.__text_action("Perdón, no encontré a la persona que buscabas")
+			self.__text_action("Perdón, no encuentro al docente")
 
 	# CUSTOM
 	def __career_sc_action(self, nlu_entities=None):
@@ -188,7 +186,7 @@ class Bot(object):
 			career_action = "Ten el detalle de Semestres y Materias de %s." % career
 			self.speech.synthesize_text(career_action)
 		else:
-			self.__text_action("Perdón, no encontré la carrera que buscas.")
+			self.__text_action("Perdón, no encontré la carrera que buscas")
 
 	# CUSTOM: Base example is Info about <course> by <professor>
 	def __courses_action(self, nlu_entities=None):
@@ -237,7 +235,7 @@ class Bot(object):
 					index += 1
 
 		else:
-			self.__text_action("Perdón, no encontré la clase que buscas.")
+			self.__text_action("Perdón, no encontré la materia que buscas")
 
 	def __maps_action(self, nlu_entities=None):
 		location = None
@@ -255,7 +253,7 @@ class Bot(object):
 			requests.post("http://localhost:8888/image", data=json.dumps(body))
 			self.speech.synthesize_text(maps_action)
 		else:
-			self.__text_action("Perdón, no encontré el lugar que buscabas")
+			self.__text_action("Perdón, no encontré el lugar que buscas")
 
 	def __text_action(self, text=None):
 		if text is not None:
@@ -264,6 +262,7 @@ class Bot(object):
 
 	def __debugger_recognition(self, enable=True):
 		if self.debugger_enabled:
+			print("...Loading...")
 			try:
 				r = requests.get("http://localhost:8888/recognition?enabled=%s" % str(enable))
 				if r.status_code != 200:

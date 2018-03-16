@@ -27,36 +27,22 @@ class NLG(object):
 
 		return random.choice(infos) + " " + random.choice(infos2)
 
-	def acknowledge(self, user_name = ""):
+	def acknowledge(self):
 		simple_acknoledgement = [
 			"Sí?",
-			"Qué puedo hacer por vos?",
-			"Qué querés?"
+			"Qué deseas?",
+			"Qué necesitas de mí?",
+			"Cómo puedo ayudarte?",
+			"Qué puedo hacer por ti?"
 		]
-
-		personal_acknowledgement = [
-			"Qué necesitas de mí, %s?" % user_name,
-			"Cómo puedo ayudarte, %s?" % user_name,
-			"Qué puedo hacer por vos, %s?" % user_name,
-			"Hola %s, qué puedo hacer por vos?" % user_name,
-			"Hey %s, qué puedo hacer por vos?" % user_name
-		]
-
-		choice = 0
-		if user_name is not None:
-			choice = random.randint(0, 2)
-		else:
-			choice = random.randint(0,1)
 
 		ret_phrase = ""
-
-		if choice == 0:
+		greet_with_date = random.choice([True, False])
+		if greet_with_date:
 			ret_phrase = random.choice(simple_acknoledgement)
-		elif choice == 1:
-			date = dt.datetime.now()
-			ret_phrase = "%s. Qué puedo hacer por vos?" % self.time_of_day(date)
 		else:
-			ret_phrase = random.choice(personal_acknowledgement)
+			date = dt.datetime.now()
+			ret_phrase = ("{}. {}").format(self.time_of_day(date), random.choice(simple_acknoledgement))
 
 		return ret_phrase
 
@@ -76,41 +62,6 @@ class NLG(object):
 				ret_phrase = "%s %s" % ("this", ret_phrase)
 
 		return ret_phrase
-
-	def searching(self):
-		searching_phrases = [
-			"I'll see what I can find"
-		]
-
-		return random.choice(searching_phrases)
-
-	def personal_status(self, status_type=None):
-		positive_status=[
-			"I'm doing well",
-			"Great, thanks for asking",
-			"I'm doing great"
-		]
-
-		negative_status = [
-			"I'm not doing well",
-			"I'm feeling terrible",
-			"I'm not doing well today",
-			"I could be much better"
-		]
-
-		moderate_status = [
-			"I'm doing alright",
-			"I'm okay",
-			"I could be better",
-			"I'm alright"
-		]
-
-		if status_type == 'negative':
-			return random.choice(negative_status)
-		elif status_type == 'moderate':
-			return random.choice(moderate_status)
-
-		return random.choice(positive_status)
 
 	# CUSTOM
 	def chiefs(self, career=None):
@@ -183,13 +134,13 @@ class NLG(object):
 		if now > dt.time(0,0,0) and now <= dt.time(10,10,0):
 			actual_schedule = "El próximo bus debería salir a las " + schedules[0]
 		elif now > dt.time(10,10,0) and now <= dt.time(12,25,0):
-			actual_schedule = schedules[2]
+			actual_schedule = schedules[1]
 		elif now > dt.time(12,25,0) and now <= dt.time(14,40,0):
-			actual_schedule = schedules[3]
+			actual_schedule = schedules[2]
 		elif now > dt.time(14,40,0) and now <= dt.time(16,55,0):
-			actual_schedule = schedules[4]
+			actual_schedule = schedules[3]
 		elif now > dt.time(16,55,0) and now <= dt.time(18,50,0):
-			actual_schedule = schedules[5]
+			actual_schedule = schedules[4]
 		else:
 			actual_schedule = "Lo siento, el último bus ya salió."
 			
