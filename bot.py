@@ -25,6 +25,7 @@ conf = None
 class Bot(object):
 	def __init__(self):
 		global conf
+		self.debugger_enabled = debugger_enabled
 		with open('config.json') as data_file:
 			conf = json.load(data_file)
 		self.nlg = NLG()
@@ -61,6 +62,7 @@ class Bot(object):
 		#speech = self.speech.google_speech_recognition(recognizer, audio)
 
 		#Recognize audio with Wit Speech API
+		self.__debugger_recognition(enable=True)
 		speech = self.speech.wit_speech_recognition(recognizer, audio, str(conf["tokens"]["wit_ai_token"]))
 
 		if speech is not None:
@@ -68,6 +70,7 @@ class Bot(object):
 				#speech = "torta UPB" ###Hardcoded Speech
 				print('Requesting WIT.AI [' + speech + ']')
 				r = requests.get('https://api.wit.ai/message?v=20180301&q=%s' % speech, headers={'Authorization': str(conf["tokens"]["wit_ai_token"])})
+				self.__debugger_recognition(enable=False)
 				print('Text ' + r.text)
 				#print(r.headers['authorization'])
 				json_resp = json.loads(r.text)
@@ -258,6 +261,15 @@ class Bot(object):
 		if text is not None:
 			requests.get("http://localhost:8888/statement?text=%s" % text)
 			self.speech.synthesize_text(text)
+
+	def __debugger_recognition(self, enable=True):
+		if self.debugger_enabled:
+			try:
+				r = requests.get("http://localhost:8888/recognition?enabled=%s" % str(enable))
+				if r.status_code != 200:
+					print("Used wrong endpoint for recognition debugging")
+			except Exception as e:
+				print(e)
 
 if __name__ == "__main__":
 	bot = Bot()
