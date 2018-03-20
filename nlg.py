@@ -64,62 +64,6 @@ class NLG(object):
 		return ret_phrase
 
 	# CUSTOM
-	def chiefs(self, career=None):
-		chiefs = [
-			"Ph.D. Mariana Lacunza",
-			"Ph.D. Francisco Aguirre",
-			"Ph.D.c. Ricardo Nogales",
-			"Ph.D. Elizabeth Torres",
-			"Mgr. Laura García",
-			"Mgr. Marcelo Canedo",
-			"Mgr. Marcel Barrero",
-			"Ph.D. Cecilia Tapia",
-			"Ph.D. Omar Ormachea",
-			"Ing. Lourdes Oropeza",
-			"Mgr. Agatha Da Silva",
-			"Ph.D.c. Juan José Jordán",
-			"Mgr. Martín Arandia",
-			"Arq. Bernardo Cabrerizo",
-			"Mgr. Rommel Rojas",
-			"Ph.D. Juan Carlos Jordán"
-		]
-		
-		if career == u'Comunicación':
-			return chiefs[0]
-		elif career == u'Ingeniería Civil':
-			return chiefs[1]
-		elif career == u'Economía':
-			return chiefs[2]
-		elif career == u'Ingeniería de la Producción':
-			return chiefs[3]
-		elif career == u'Derecho':
-			return chiefs[4]
-		elif career == u'Diseño Gráfico':
-			return chiefs[5]
-		elif career == u'Ingeniería de Sistemas Computacionales':
-			return chiefs[6]
-		elif career == u'Ingeniería Electromecánica':
-			return chiefs[7]
-		elif career == u'Ingeniería Electrónica y Telecomunicaciones':
-			return chiefs[8]
-		elif career == u'Ingeniería Petrolera y Gas Natural':
-			return chiefs[9]
-		elif career == u'Ingeniería Industrial y de Sistemas':
-			return chiefs[10]
-		elif career == u'Ingeniería Financiera':
-			return chiefs[11]
-		elif career == u'Marketing y Logística':
-			return chiefs[12]
-		elif career == u'Arquitectura':
-			return chiefs[13]
-		elif career == u'Ingeniería Comercial':
-			return chiefs[14]
-		elif career == u'Administración de Empresas':
-			return chiefs[15]
-
-		return None
-
-	# CUSTOM
 	def buses(self):
 		actual_schedule = None
 		schedules = [
@@ -131,16 +75,17 @@ class NLG(object):
 		]
 
 		now = dt.datetime.now().time()
+		actual_schedule = "El próximo bus debería salir a las "
 		if now > dt.time(0,0,0) and now <= dt.time(10,10,0):
-			actual_schedule = "El próximo bus debería salir a las " + schedules[0]
+			actual_schedule += schedules[0]
 		elif now > dt.time(10,10,0) and now <= dt.time(12,25,0):
-			actual_schedule = schedules[1]
+			actual_schedule += schedules[1]
 		elif now > dt.time(12,25,0) and now <= dt.time(14,40,0):
-			actual_schedule = schedules[2]
+			actual_schedule += schedules[2]
 		elif now > dt.time(14,40,0) and now <= dt.time(16,55,0):
-			actual_schedule = schedules[3]
+			actual_schedule += schedules[3]
 		elif now > dt.time(16,55,0) and now <= dt.time(18,50,0):
-			actual_schedule = schedules[4]
+			actual_schedule += schedules[4]
 		else:
 			actual_schedule = "Lo siento, el último bus ya salió."
 			

@@ -125,14 +125,15 @@ class Bot(object):
 
 	# CUSTOM
 	def __chiefs_action(self, nlu_entities=None):
-		chief = None
-		if nlu_entities is not None and 'Career_Type' in nlu_entities:
-			career_type = nlu_entities['Career_Type'][0]['value']
-			print(career_type)
-			chief = self.nlg.chiefs(career_type)
-
-		if chief is not None:
-			self.__text_action(chief)
+		if nlu_entities is not None and 'Career_Names' in nlu_entities:
+			career_name = nlu_entities['Career_Names'][0]['value']
+			print(career_name)
+		
+		if career_name is not None:
+			career_data = self.firebase.get_DB_chief(career_name)
+			chief = career_data['head_name']
+			chiefhours = career_data['head_available_hours']
+			self.__text_action(("El jefe de carrera de {} es {}, sus horarios de atención son de {}").format(career_name, chief, chiefhours))
 		else:
 			self.__text_action("Perdón, no encuentro al jefe de carrera")
 
@@ -188,7 +189,7 @@ class Bot(object):
 		else:
 			self.__text_action("Perdón, no encontré la carrera que buscas")
 
-	# CUSTOM: Base example is Info about <course> by <professor>
+	# CUSTOM
 	def __courses_action(self, nlu_entities=None):
 		course = None
 		professor = None

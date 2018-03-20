@@ -49,6 +49,16 @@ class Firebase(object):
 			print(e)
 			return
 
+	def get_DB_chief(self, career = None):
+		try:
+			db = firebase.database()
+			data = db.child("careers").child(career).get().val()
+			return data
+
+		except Exception as e:
+			print(e)
+			return
+
 	def get_DB_course_parallels(self, course = None, professor = None):
 		try:
 			db = firebase.database()
