@@ -53,6 +53,8 @@ class Firebase(object):
 		try:
 			db = firebase.database()
 			data = db.child("rooms").child(room).child("cs_url").get().val()
+			if data is None:
+				return None
 			return data
 
 		except Exception as e:
@@ -63,6 +65,8 @@ class Firebase(object):
 		try:
 			db = firebase.database()
 			data = db.child("careers").child(career).get().val()
+			if data is None:
+				return None
 			return data
 
 		except Exception as e:
@@ -73,6 +77,9 @@ class Firebase(object):
 		try:
 			db = firebase.database()
 			data = db.child("courses").child(course).child("parallels").get().val()
+			if data is None:
+				return None
+
 			if professor is None:
 				return data
 			else:

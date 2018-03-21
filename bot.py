@@ -129,6 +129,8 @@ class Bot(object):
 		
 		if career_name is not None:
 			career_data = self.firebase.get_DB_career(career_name)
+			if career_data is None:
+				self.__text_action("Perdón, no encuentro al jefe de carrera")
 			chief = career_data['head_name']
 			chiefhours = career_data['head_available_hours']
 			self.__text_action(("El jefe de carrera de {} es {}, sus horarios de atención son de {}").format(career_name, chief, chiefhours))
@@ -143,6 +145,8 @@ class Bot(object):
 
 		if room_name is not None:
 			room_url = self.firebase.get_DB_roomurl(room_name)
+			if room_url is None:
+				self.__text_action("Perdón, no encuentré esa carrera")
 			body = {'url': room_url}
 			requests.post("http://localhost:8888/image", data=json.dumps(body))
 			
@@ -158,6 +162,8 @@ class Bot(object):
 		
 		if career_name is not None:
 			career_data = self.firebase.get_DB_career(career_name)
+			if career_data is None:
+				self.__text_action("Perdón, no encontré la carrera que buscas")
 			sc_url = career_data['info_url']
 			body = {'url': sc_url}
 			requests.post("http://localhost:8888/image", data=json.dumps(body))
@@ -181,6 +187,9 @@ class Bot(object):
 		if course is not None:
 			if professor is None:
 				parallels = self.firebase.get_DB_course_parallels(course)
+				if parallels is None:
+					self.__text_action("Perdón, no encontré la materia que buscas")
+					return
 				if len(parallels) == 1:
 					self.__text_action(("Existe 1 paralelo de {}...").format(course))
 				else:
@@ -195,9 +204,11 @@ class Bot(object):
 						classroom = "un aula por definir"
 					period = parallel['period']
 					self.__text_action(("{}. Las clases son en horario {} en {}").format(professor, period, classroom))
-
 			else:
 				parallels = self.firebase.get_DB_course_parallels(course, professor)
+				if parallels is None:
+					self.__text_action("Perdón, no encontré la materia que buscas")
+					return
 				if len(parallels) == 1:
 					self.__text_action(("Existe 1 paralelo de {} con {}...").format(course, professor))
 				else:
