@@ -149,7 +149,7 @@ class Bot(object):
 		if room_name is not None:
 			room_url = self.firebase.get_DB_roomurl(room_name)
 			if room_url is None:
-				self.__text_action("Perdón, no encuentré esa carrera")
+				self.__text_action("Perdón, no encontré el salon que buscabas")
 				return
 			body = {'url': room_url}
 			requests.post("http://localhost:8888/image", data=json.dumps(body))
