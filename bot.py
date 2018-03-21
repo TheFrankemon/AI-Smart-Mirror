@@ -98,8 +98,6 @@ class Bot(object):
 				self.__rooms_action(entities)
 			elif intent == 'buses':
 				self.__text_action(self.nlg.buses())
-			elif intent == 'schedules':
-				self.__schedules_action(entities)
 			elif intent == 'career_semesterclasses':
 				self.__career_sc_action(entities)
 			elif intent == 'courses':
@@ -130,7 +128,7 @@ class Bot(object):
 			print(career_name)
 		
 		if career_name is not None:
-			career_data = self.firebase.get_DB_chief(career_name)
+			career_data = self.firebase.get_DB_career(career_name)
 			chief = career_data['head_name']
 			chiefhours = career_data['head_available_hours']
 			self.__text_action(("El jefe de carrera de {} es {}, sus horarios de atención son de {}").format(career_name, chief, chiefhours))
@@ -139,53 +137,32 @@ class Bot(object):
 
 	# CUSTOM
 	def __rooms_action(self, nlu_entities=None):
-		location = None
-		if nlu_entities is not None:
-			if 'Room_Type' in nlu_entities:
-				location = nlu_entities['Room_Type'][0]['value']
-				print(location)
+		if nlu_entities is not None and 'Room_Type' in nlu_entities:
+			room_name = nlu_entities['Room_Type'][0]['value']
+			print(room_name)
 
-		if location is not None:
-			room_url = self.nlg.get_UPBroute_url(location)
+		if room_name is not None:
+			room_url = self.firebase.get_DB_roomurl(room_name)
 			body = {'url': room_url}
 			requests.post("http://localhost:8888/image", data=json.dumps(body))
 			
-			room_action = "%s se encuentra aqui." % location
-			self.speech.synthesize_text(room_action)
+			self.speech.synthesize_text(("{} se encuentra aqui.").format(room_name))
 		else:
 			self.__text_action("Perdón, no encontré el salon que buscabas")
 
 	# CUSTOM
-	def __schedules_action(self, nlu_entities=None):
-		if nlu_entities is not None:
-			if 'Professor_Names' in nlu_entities:
-				prof = nlu_entities['Professor_Names'][0]['value']
-				print(prof)
-
-		if prof is not None:
-			prof_url = self.nlg.get_schedule_url(prof)
-			body = {'url': prof_url}
-			requests.post("http://localhost:8888/image", data=json.dumps(body))
-			
-			prof_action = "%s tiene los siguientes horarios. Podras tambien consultar sobre las ubicaciones." % prof
-			self.speech.synthesize_text(prof_action)
-		else:
-			self.__text_action("Perdón, no encuentro al docente")
-
-	# CUSTOM
 	def __career_sc_action(self, nlu_entities=None):
-		if nlu_entities is not None:
-			if 'Career_Type' in nlu_entities:
-				career = nlu_entities['Career_Type'][0]['value']
-				print(career)
-
-		if career is not None:
-			career_url = self.nlg.get_sc_url(career)
-			body = {'url': career_url}
+		if nlu_entities is not None and 'Career_Names' in nlu_entities:
+			career_name = nlu_entities['Career_Names'][0]['value']
+			print(career_name)
+		
+		if career_name is not None:
+			career_data = self.firebase.get_DB_career(career_name)
+			sc_url = career_data['info_url']
+			body = {'url': sc_url}
 			requests.post("http://localhost:8888/image", data=json.dumps(body))
 			
-			career_action = "Ten el detalle de Semestres y Materias de %s." % career
-			self.speech.synthesize_text(career_action)
+			self.speech.synthesize_text(("Ten el detalle de Semestres y Materias de {}.").format(career_name))
 		else:
 			self.__text_action("Perdón, no encontré la carrera que buscas")
 

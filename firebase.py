@@ -49,7 +49,17 @@ class Firebase(object):
 			print(e)
 			return
 
-	def get_DB_chief(self, career = None):
+	def get_DB_roomurl(self, room = None):
+		try:
+			db = firebase.database()
+			data = db.child("rooms").child(room).child("cs_url").get().val()
+			return data
+
+		except Exception as e:
+			print(e)
+			return
+
+	def get_DB_career(self, career = None):
 		try:
 			db = firebase.database()
 			data = db.child("careers").child(career).get().val()
