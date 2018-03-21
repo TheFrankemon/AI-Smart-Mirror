@@ -123,6 +123,7 @@ class Bot(object):
 
 	# CUSTOM
 	def __chiefs_action(self, nlu_entities=None):
+		career_name = None		
 		if nlu_entities is not None and 'Career_Names' in nlu_entities:
 			career_name = nlu_entities['Career_Names'][0]['value']
 			print(career_name)
@@ -139,6 +140,7 @@ class Bot(object):
 
 	# CUSTOM
 	def __rooms_action(self, nlu_entities=None):
+		room_name = None		
 		if nlu_entities is not None and 'Room_Type' in nlu_entities:
 			room_name = nlu_entities['Room_Type'][0]['value']
 			print(room_name)
@@ -156,6 +158,7 @@ class Bot(object):
 
 	# CUSTOM
 	def __career_sc_action(self, nlu_entities=None):
+		career_name = None
 		if nlu_entities is not None and 'Career_Names' in nlu_entities:
 			career_name = nlu_entities['Career_Names'][0]['value']
 			print(career_name)
