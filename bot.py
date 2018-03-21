@@ -93,7 +93,7 @@ class Bot(object):
 			print(intent)
 			#CUSTOM>
 			if intent == 'chiefs':
-				self.__chiefs_action(entities)
+				self.__hod_action(entities)
 			elif intent == 'rooms':
 				self.__rooms_action(entities)
 			elif intent == 'buses':
@@ -122,7 +122,7 @@ class Bot(object):
 		self.__text_action(self.nlg.acknowledge())
 
 	# CUSTOM
-	def __chiefs_action(self, nlu_entities=None):
+	def __hod_action(self, nlu_entities=None):
 		career_name = None		
 		if nlu_entities is not None and 'Career_Names' in nlu_entities:
 			career_name = nlu_entities['Career_Names'][0]['value']
@@ -133,9 +133,9 @@ class Bot(object):
 			if career_data is None:
 				self.__text_action("Perdón, no encuentro al jefe de carrera")
 				return
-			chief = career_data['head_name']
-			chiefhours = career_data['head_available_hours']
-			self.__text_action(("El jefe de carrera de {} es {}, sus horarios de atención son de {}").format(career_name, chief, chiefhours))
+			hod = career_data['HOD_name']
+			hod_hours = career_data['HOD_available_hours']
+			self.__text_action(("El jefe de carrera de {} es {}, sus horarios de atención son de {}").format(career_name, hod, hod_hours))
 		else:
 			self.__text_action("Perdón, no encuentro al jefe de carrera")
 
