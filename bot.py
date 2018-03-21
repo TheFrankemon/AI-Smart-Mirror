@@ -132,6 +132,7 @@ class Bot(object):
 			career_data = self.firebase.get_DB_career(career_name)
 			if career_data is None:
 				self.__text_action("Perdón, no encuentro al jefe de carrera")
+				return
 			chief = career_data['head_name']
 			chiefhours = career_data['head_available_hours']
 			self.__text_action(("El jefe de carrera de {} es {}, sus horarios de atención son de {}").format(career_name, chief, chiefhours))
@@ -149,6 +150,7 @@ class Bot(object):
 			room_url = self.firebase.get_DB_roomurl(room_name)
 			if room_url is None:
 				self.__text_action("Perdón, no encuentré esa carrera")
+				return
 			body = {'url': room_url}
 			requests.post("http://localhost:8888/image", data=json.dumps(body))
 			
@@ -167,6 +169,7 @@ class Bot(object):
 			career_data = self.firebase.get_DB_career(career_name)
 			if career_data is None:
 				self.__text_action("Perdón, no encontré la carrera que buscas")
+				return
 			sc_url = career_data['info_url']
 			body = {'url': sc_url}
 			requests.post("http://localhost:8888/image", data=json.dumps(body))
