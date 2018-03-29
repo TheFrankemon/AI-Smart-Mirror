@@ -92,10 +92,10 @@ class Bot(object):
 
 			print(intent)
 			#CUSTOM>
-			if intent == 'chiefs':
-				self.__hod_action(entities)
-			elif intent == 'rooms':
-				self.__rooms_action(entities)
+			if intent == 'hods':
+				self.__hods_action(entities)
+			elif intent == 'upb_locations':
+				self.__upblocations_action(entities)
 			elif intent == 'buses':
 				self.__text_action(self.nlg.buses())
 			elif intent == 'career_semesterclasses':
@@ -122,7 +122,7 @@ class Bot(object):
 		self.__text_action(self.nlg.acknowledge())
 
 	# CUSTOM
-	def __hod_action(self, nlu_entities=None):
+	def __hods_action(self, nlu_entities=None):
 		career_name = None		
 		if nlu_entities is not None and 'Career_Names' in nlu_entities:
 			career_name = nlu_entities['Career_Names'][0]['value']
@@ -140,21 +140,21 @@ class Bot(object):
 			self.__text_action("Perdón, no encuentro al jefe de carrera")
 
 	# CUSTOM
-	def __rooms_action(self, nlu_entities=None):
-		room_name = None		
-		if nlu_entities is not None and 'Room_Type' in nlu_entities:
-			room_name = nlu_entities['Room_Type'][0]['value']
-			print(room_name)
+	def __upblocations_action(self, nlu_entities=None):
+		upblocation_name = None		
+		if nlu_entities is not None and 'UPB_Location_Names' in nlu_entities:
+			upblocation_name = nlu_entities['UPB_Location_Names'][0]['value']
+			print(upblocation_name)
 
-		if room_name is not None:
-			room_url = self.firebase.get_DB_roomurl(room_name)
-			if room_url is None:
+		if upblocation_name is not None:
+			upblocation_url = self.firebase.get_DB_upblocationurl(upblocation_name)
+			if upblocation_url is None:
 				self.__text_action("Perdón, no encontré el salon que buscabas")
 				return
-			body = {'url': room_url}
+			body = {'url': upblocation_url}
 			requests.post("http://localhost:8888/image", data=json.dumps(body))
 			
-			self.speech.synthesize_text(("{} se encuentra aqui.").format(room_name))
+			self.speech.synthesize_text(("{} se encuentra aqui.").format(upblocation_name))
 		else:
 			self.__text_action("Perdón, no encontré el salon que buscabas")
 

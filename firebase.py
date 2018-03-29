@@ -49,10 +49,10 @@ class Firebase(object):
 			print(e)
 			return
 
-	def get_DB_roomurl(self, room = None):
+	def get_DB_upblocationurl(self, upblocation = None):
 		try:
 			db = firebase.database()
-			data = db.child("rooms").child(room).child("cs_url").get().val()
+			data = db.child("upblocations").child(upblocation).child("cs_url").get().val()
 			if data is None:
 				return None
 			return data
