@@ -3,8 +3,6 @@ import pyrebase
 import json
 import os
 
-usr = ""
-pwd = ""
 fireconfig = ""
 firebase = None
 fileDir = os.path.dirname(os.path.realpath('__file__'))
@@ -14,8 +12,6 @@ class Firebase(object):
 		with open('config.json') as data_file:
 			conf = json.load(data_file)
 		global usr, pwd, fireconfig
-		usr = str(conf["conn"]["usr"])
-		pwd = str(conf["conn"]["pwd"])
 		fireconfig = conf["conn"]["fireconfig"]
 		self.connect()
 
