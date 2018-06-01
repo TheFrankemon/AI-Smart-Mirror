@@ -94,7 +94,7 @@ class Bot(object):
 			#CUSTOM>
 			if intent == 'hods':
 				self.__hods_action(entities)
-			elif intent == 'upb_locations':
+			elif intent == 'upblocations':
 				self.__upblocations_action(entities)
 			elif intent == 'buses':
 				self.__text_action(self.nlg.buses())
@@ -149,14 +149,14 @@ class Bot(object):
 		if upblocation_name is not None:
 			upblocation_url = self.firebase.get_DB_upblocationurl(upblocation_name)
 			if upblocation_url is None:
-				self.__text_action("Perdón, no encontré el salon que buscabas")
+				self.__text_action("Perdón, no encontré una ruta para la ubicación")
 				return
 			body = {'url': upblocation_url}
 			requests.post("http://localhost:8888/image", data=json.dumps(body))
 			
 			self.speech.synthesize_text(("{} se encuentra aqui.").format(upblocation_name))
 		else:
-			self.__text_action("Perdón, no encontré el salon que buscabas")
+			self.__text_action("Perdón, no encontré la ubicación que buscabas")
 
 	# CUSTOM
 	def __career_sc_action(self, nlu_entities=None):
@@ -170,7 +170,7 @@ class Bot(object):
 			if career_data is None:
 				self.__text_action("Perdón, no encontré la carrera que buscas")
 				return
-			sc_url = career_data['info_url']
+			sc_url = career_data['cs_url']
 			body = {'url': sc_url}
 			requests.post("http://localhost:8888/image", data=json.dumps(body))
 			
