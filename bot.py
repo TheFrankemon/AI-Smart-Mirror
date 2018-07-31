@@ -16,8 +16,8 @@ from speech import Speech
 from vision import Vision
 from firebase import Firebase
 
-user_name = "Desconocido"
-debugger_enabled = True
+# user_name = "Desconocido"
+status_enabled = True
 camera = 0
 conf = None
 
@@ -27,7 +27,7 @@ class Bot(object):
 		with open('config.json') as data_file:
 			conf = json.load(data_file)
 		self.nlg = NLG()
-		self.speech = Speech(debugger_enabled=debugger_enabled)
+		self.speech = Speech(status_enabled=status_enabled)
 		self.vision = Vision(camera=camera)
 		self.firebase = Firebase()
 
@@ -60,67 +60,15 @@ class Bot(object):
 				self.vision.recognize_face('c2')
 				print("Found face > Took Photo#2")
 				print("Username: " + uname[u'name'])
-				global user_name
+				#global user_name
 				user_name = uname['name']
 				requests.get('http://localhost:8888/unameclear')
-				self.__user_name_action()
+				self.__acknowledge_action(user_name)
 				timestamp = dt.datetime.today().strftime('%d/%m/%y %H:%M:%S')
 				self.firebase.add(user_name,"img/c1.jpg","img/c2.jpg", timestamp)
 				print("User saved succesfully on DB")
 				self.__goodbye_action()
-				# should ask decide_action ??
-				#self.__acknowledge_action()
-				#self.decide_action()
 				time.sleep(5)
-
-	def decide_action(self):
-		"""
-		Recursively decides an action based on the intent.
-		:return:
-		"""
-		recognizer, audio = self.speech.listen_for_audio()
-
-		# received audio data, now we'll recognize it using Google Speech Recognition
-		#speech = self.speech.google_speech_recognition(recognizer, audio)
-
-		# received audio data, now we'll recognize it using Wit Speech API
-		speech = self.speech.wit_speech_recognition(recognizer, audio, str(conf["tokens"]["wit_ai_token"]))
-
-		if speech is not None:
-			try:
-				## Uncomment for HARDCODED SPEECH ##
-				#speech = "torta UPB"
-				print('Requesting WIT.AI [' + speech + ']')
-				r = requests.get('https://api.wit.ai/message?v=20170403&q=%s' % speech, headers={'Authorization': str(conf["tokens"]["wit_ai_token"])})
-				print('Text ' + r.text)
-				#print r.headers['authorization']
-				json_resp = json.loads(r.text)
-				entities = None
-				intent = None
-				if 'entities' in json_resp and 'Intent' in json_resp['entities']:
-					entities = json_resp['entities']
-					intent = json_resp['entities']['Intent'][0]["value"]
-
-				print(intent)
-				if intent == 'appearance':
-					self.__appearance_action()
-				elif intent == 'insult':
-					self.__insult_action()
-					return
-				elif intent == 'appreciation':
-					self.__appreciation_action()
-					return
-				else: # No recognized intent
-					self.__text_action("Perdón, aún estoy en kinder.")
-
-			except Exception as e:
-				print("Failed wit!")
-				print(e)
-				traceback.print_exc()
-				self.__text_action("Perdón, no te entendí")
-				return
-
-			self.decide_action()
 
 	# CUSTOM
 	def __intro_action(self):
@@ -131,21 +79,13 @@ class Bot(object):
 		else:
 			self.__text_action(intro_phrase)
 
-	def __user_name_action(self):
-		username_phrase = self.nlg.user_name(user_name)
+	def __acknowledge_action(self, user_name=None):
+		acknowledge_phrase = self.nlg.acknowledge(user_name)
 
-		if user_name is None:
+		if user_name is not None:
+			self.__text_action(acknowledge_phrase)
+		else:
 			self.__text_action("No pude guardar tu nombre, contacta a un humano por favor")
-		else:
-			self.__text_action(username_phrase)
-
-	def __acknowledge_action(self):
-		acknowledge = self.nlg.acknowledge(user_name)
-
-		if acknowledge is not None:
-			self.__text_action(acknowledge)
-		else:
-			self.__text_action("Me raye, contacta a un humano por favor")
 
 	def __goodbye_action(self):
 		goodbye = self.nlg.goodbye()
@@ -154,15 +94,6 @@ class Bot(object):
 			self.__text_action(goodbye)
 		else:
 			self.__text_action("Me raye, contacta a un humano por favor")
-
-	def __appreciation_action(self):
-		self.__text_action(self.nlg.appreciation())
-
-	def __insult_action(self):
-		self.__text_action(self.nlg.insult())
-
-	def __appearance_action(self):
-		requests.get("http://localhost:8888/face")
 
 	def __text_action(self, text=None):
 		if text is not None:

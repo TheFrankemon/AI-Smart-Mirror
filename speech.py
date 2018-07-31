@@ -10,9 +10,9 @@ from pydub import AudioSegment
 from pydub.playback import play
 
 class Speech(object):
-	def __init__(self, debugger_enabled=False):
-		self.debugger_enabled = debugger_enabled
-		self.__debugger_microphone(enable=False)
+	def __init__(self, status_enabled=False):
+		self.status_enabled = status_enabled
+		self.__microphone_status(enable=False)
 
 	def google_speech_recognition(self, recognizer, audio):
 		speech = None
@@ -44,11 +44,11 @@ class Speech(object):
 		m = sr.Microphone()
 		with m as source:
 			r.adjust_for_ambient_noise(source)
-			self.__debugger_microphone(enable=True)
+			self.__microphone_status(enable=True)
 			print("I'm listening...")
 			audio = r.listen(source)
 
-		self.__debugger_microphone(enable=False)
+		self.__microphone_status(enable=False)
 		print("Found audio")
 		return r, audio
 
@@ -59,8 +59,8 @@ class Speech(object):
 		play(song)
 		os.remove("tmp.mp3")
 
-	def __debugger_microphone(self, enable=True):
-		if self.debugger_enabled:
+	def __microphone_status(self, enable=True):
+		if self.status_enabled:
 			try:
 				r = requests.get("http://localhost:8888/microphone?enabled=%s" % str(enable))
 				if r.status_code != 200:

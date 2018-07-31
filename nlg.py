@@ -31,7 +31,7 @@ class NLG(object):
 
 		return random.choice(intros) + " " + random.choice(intros2)
 
-	def user_name(self, user_name):
+	def acknowledge(self, user_name):
 		phrases = [
 			"Muy bien, así que eres %s" % user_name,
 			"Así que tu nombre es %s" % user_name,
@@ -43,39 +43,6 @@ class NLG(object):
 		]
 
 		return random.choice(phrases) + ". Espera unos segundos por favor"
-
-	def acknowledge(self, user_name):
-		if user_name is None:
-			user_name = ""
-
-		simple_acknoledgement = [
-			"Sí?",
-			"Qué puedo hacer por vos?"
-		]
-
-		personal_acknowledgement = [
-			"Qué necesitas de mí, %s?" % user_name,
-			"Cómo puedo ayudarte, %s?" % user_name,
-			"Qué puedo hacer por vos, %s?" % user_name
-		]
-
-		choice = 0
-		if user_name is not None:
-			choice = random.randint(0, 2)
-		else:
-			choice = random.randint(0,1)
-
-		ret_phrase = ""
-
-		if choice == 0:
-			ret_phrase = random.choice(simple_acknoledgement)
-		elif choice == 1:
-			date = dt.datetime.now()
-			ret_phrase = "%s. Qué puedo hacer por vos?" % self.time_of_day(date)
-		else:
-			ret_phrase = random.choice(personal_acknowledgement)
-
-		return ret_phrase
 
 	def goodbye(self):
 		goodbyes = [
@@ -93,29 +60,6 @@ class NLG(object):
 		]
 
 		return random.choice(goodbyes) + " " + random.choice(goodbyes2)
-
-	"""
-	def searching(self):
-		searching_phrases = [
-			"I'll see what I can find"
-		]
-
-		return random.choice(searching_phrases)
-	"""
-
-	def insult(self):
-		return "That's not very nice. Talk to me again when you have fixed your attitude"
-
-	def appreciation(self):
-		phrases = [
-			"No hay problema!",
-			"No, gracias a ti",
-			"De nada",
-			"No, por favor",
-			"Ni lo menciones"
-		]
-
-		return random.choice(phrases)
 
 	def time_of_day(self, date, with_adjective=False):
 		ret_phrase = ""
