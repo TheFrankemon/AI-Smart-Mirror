@@ -18,18 +18,18 @@ from firebase import Firebase
 
 launch_phrase = "hola"
 use_launch_phrase = True
-debugger_enabled = True
+status_enabled = True
 camera = 0
 conf = None
 
 class Bot(object):
 	def __init__(self):
 		global conf
-		self.debugger_enabled = debugger_enabled
+		self.status_enabled = status_enabled
 		with open('config.json') as data_file:
 			conf = json.load(data_file)
 		self.nlg = NLG()
-		self.speech = Speech(launch_phrase=launch_phrase, debugger_enabled=debugger_enabled)
+		self.speech = Speech(launch_phrase=launch_phrase, status_enabled=status_enabled)
 		self.vision = Vision(camera=camera)
 		self.firebase = Firebase()
 
@@ -45,9 +45,9 @@ class Bot(object):
 				self.__info_action(launch_phrase)
 				if use_launch_phrase:
 					recognizer, audio = self.speech.listen_for_audio()
-					self.__debugger_recognition(enable=True)
+					self.__recognition_status(enable=True)
 					if self.speech.is_call_to_action(recognizer, audio, str(conf["tokens"]["wit_ai_token"])):
-						self.__debugger_recognition(enable=False)
+						self.__recognition_status(enable=False)
 						self.__acknowledge_action()
 						self.decide_action()
 				else:
@@ -64,11 +64,11 @@ class Bot(object):
 		#speech = self.speech.google_speech_recognition(recognizer, audio)
 
 		#Recognize audio with Wit Speech API
-		self.__debugger_recognition(enable=True)
+		self.__recognition_status(enable=True)
 		speech = self.speech.wit_speech_recognition(recognizer, audio, str(conf["tokens"]["wit_ai_token"]))
 
 		if speech is None:
-			self.__debugger_recognition(enable=False)
+			self.__recognition_status(enable=False)
 			self.__text_action("Perdón, no te oí bien. Déjame reconocerte de nuevo...")
 		else:
 			entities = None
@@ -77,7 +77,7 @@ class Bot(object):
 				#speech = "something" ##Hardcoded Speech
 				print('Requesting WIT.AI: ' + speech)
 				r = requests.get('https://api.wit.ai/message?v=20180301&q=%s' % speech, headers={'Authorization': str(conf["tokens"]["wit_ai_token"])})
-				self.__debugger_recognition(enable=False)
+				self.__recognition_status(enable=False)
 				print('Recognized text: ' + r.text)
 				json_resp = json.loads(r.text)
 				if 'entities' in json_resp and 'Intent' in json_resp['entities']:
@@ -255,8 +255,8 @@ class Bot(object):
 			requests.get("http://localhost:8888/statement?text=%s" % text)
 			self.speech.synthesize_text(text)
 
-	def __debugger_recognition(self, enable=True):
-		if self.debugger_enabled:
+	def __recognition_status(self, enable=True):
+		if self.status_enabled:
 			print("...Loading...")
 			try:
 				r = requests.get("http://localhost:8888/recognition?enabled=%s" % str(enable))
