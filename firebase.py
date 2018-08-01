@@ -11,7 +11,7 @@ class Firebase(object):
 	def __init__(self):
 		with open('config.json') as data_file:
 			conf = json.load(data_file)
-		global usr, pwd, fireconfig
+		global fireconfig
 		fireconfig = conf["conn"]["fireconfig"]
 		self.connect()
 
@@ -23,7 +23,6 @@ class Firebase(object):
 		except Exception as e:
 			print("Failed connection to DB!")
 			print(e)
-			traceback.print_exc()
 			return
 
 	def add(self, name, img_1, img_2, timestamp):
@@ -33,21 +32,20 @@ class Firebase(object):
 
 			imgpath = os.path.join(fileDir, img_1)
 			filename = name + '/1.jpg'
-			storage.child(filename).put(imgpath)
-			img1url = storage.child(filename).get_url(None)
+			storage.child("visitors").child(filename).put(imgpath)
+			img1url = storage.child("visitors").child(filename).get_url(None)
 			imgpath = os.path.join(fileDir, img_2)
 			filename = name + '/2.jpg'
-			storage.child(filename).put(imgpath)
-			img2url = storage.child(filename).get_url(None)
+			storage.child("visitors").child(filename).put(imgpath)
+			img2url = storage.child("visitors").child(filename).get_url(None)
 
 			userdata = {"img1": img1url, "img2": img2url, "isCompleted": False, "name": name, "ts": timestamp, "user": "", "userUID": "", "comment": ""}
-			db.child("clients").push(userdata)
+			db.child("visitors").push(userdata)
 
-			logdata = {"client": name, "event": "ARRIVED", "ts": timestamp}
+			logdata = {"visitor": name, "event": "ARRIVED", "ts": timestamp}
 			db.child("eventlog").push(logdata)
 
 		except Exception as e:
 			print("Failed to save images")
 			print(e)
-			traceback.print_exc()
 			return
