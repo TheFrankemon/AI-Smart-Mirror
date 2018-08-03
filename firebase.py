@@ -29,15 +29,17 @@ class Firebase(object):
 		try:
 			db = firebase.database()
 			storage = firebase.storage()
+			filename = self.format_filename(name, timestamp)
 
 			imgpath = os.path.join(fileDir, img_1)
-			filename = name + '/1.jpg'
-			storage.child("visitors").child(filename).put(imgpath)
-			img1url = storage.child("visitors").child(filename).get_url(None)
+			filename1 = filename + '_a.jpg'
+			storage.child("visitors").child(filename1).put(imgpath)
+			img1url = storage.child("visitors").child(filename1).get_url(None)
+			
 			imgpath = os.path.join(fileDir, img_2)
-			filename = name + '/2.jpg'
-			storage.child("visitors").child(filename).put(imgpath)
-			img2url = storage.child("visitors").child(filename).get_url(None)
+			filename2 = filename + '_b.jpg'
+			storage.child("visitors").child(filename2).put(imgpath)
+			img2url = storage.child("visitors").child(filename2).get_url(None)
 
 			userdata = {"img1": img1url, "img2": img2url, "isCompleted": False, "name": name, "ts": timestamp, "user": "", "userUID": "", "comment": ""}
 			db.child("visitors").push(userdata)
@@ -49,3 +51,15 @@ class Firebase(object):
 			print("Failed to save images")
 			print(e)
 			return
+
+	def format_filename(self, name, timestamp):
+		#given DD/MM/YY HH:MM:SS, format will be YYMMDDHHMMSS
+		file_name = name + '/'
+		file_name += timestamp[6:8] #year
+		file_name += timestamp[3:5] #month
+		file_name += timestamp[:2]  #day
+		file_name += timestamp[9:11] #hour
+		file_name += timestamp[12:14] #min
+		file_name += timestamp[15:]  #sec
+
+		return file_name
