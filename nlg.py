@@ -16,7 +16,7 @@ class NLG(object):
 		intros = [
 			"Bienvenidos a la UPB, soy UPB Smart Booth.",
 			"Bienvenidos a su nueva casa, soy UPB Smart Booth.",
-			"Hola! Soy UPB Smart Booth y aun estoy en mi etapa de prueba.",
+			"Hola! Soy UPB Smart Booth.",
 			"Esta es la UPB. Me presento, soy UPB Smart Booth."
 		]
 		
